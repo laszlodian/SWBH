@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SWB_OptionPackageInstaller.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ContentZipFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">content.zip</Value>
+    </Setting>
+    <Setting Name="DBConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server = localhost;Port= 5432; Database = swb_installs;User ID = swb_installs_admin;Password = admin</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
