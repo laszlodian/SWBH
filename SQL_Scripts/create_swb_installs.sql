@@ -2,9 +2,9 @@
 
 -- DROP TABLE public.swb_installed;
 
-CREATE TABLE public.swb_installed
+CREATE TABLE swb_installed
 (
-    pk_id serial NOT NULL DEFAULT nextval('swb_installed_pk_id_seq'::regclass),
+    pk_id int NOT NULL ,
     install_date date,
     install_pc_name character varying(200) COLLATE pg_catalog."default",
     optionpackages_count integer,

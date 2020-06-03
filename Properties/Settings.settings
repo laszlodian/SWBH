@@ -6,7 +6,73 @@
       <Value Profile="(Default)">content.zip</Value>
     </Setting>
     <Setting Name="DBConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server = localhost;Port= 5432; Database = swb_installs;User ID = swb_installs_admin;Password = admin</Value>
+      <Value Profile="(Default)">Server = 172.22.246.177; Port= 5432; Database = swb_installs; User ID = swb_installs_admin; Password = admin</Value>
+    </Setting>
+    <Setting Name="UseLocalProperties" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ArtifactsNeededToCopy" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;com.kuka.kmpOmniMove.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.core.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.fineloc.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.finepos.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.fleet.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.free.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.kmp.diffdrive1500s.lift.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.lift.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.object.handling.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.object.manager.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.ui.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.virtualLine.swb.repository.zip&lt;/string&gt;
+  &lt;string&gt;com.kuka.nav.virtualPath.swb.repository.zip&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="ProductsNeededToCopy" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;0000354955;00;KUKA.NavSolution Backup 1.16.zip&lt;/string&gt;
+  &lt;string&gt;0000354959;00;KUKA.NavSolution MapEditor 1.16.zip&lt;/string&gt;
+  &lt;string&gt;0000358676;00;KUKA.NavSolution Lift 1.16 KMP1500-S.zip&lt;/string&gt;
+  &lt;string&gt;0000356423;00;KUKA.NavSolution 1.16 KMP1500-S.zip&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="FillTextBoxes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultRemoteDropDownFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\</Value>
+    </Setting>
+    <Setting Name="LastBuildNumberTextFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">LastBuildDir.txt</Value>
+    </Setting>
+    <Setting Name="IsAdvancedMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastUsedSWBPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">p:\SWBHelper_Test\CreatedSWBs\</Value>
+    </Setting>
+    <Setting Name="LastUsedOptionPackagePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">p:\SWBHelper_Test\OPs\</Value>
+    </Setting>
+    <Setting Name="SWBZipFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SunriseWorkbench-1.16.2.16-win32-x86.zip</Value>
+    </Setting>
+    <Setting Name="AppSetting" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AppSetting</Value>
+    </Setting>
+    <Setting Name="StoreToDB" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DefaultOptionPackagePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\</Value>
+    </Setting>
+    <Setting Name="DefaultSWBPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\</Value>
+    </Setting>
+    <Setting Name="InstallAllFoundPackages" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

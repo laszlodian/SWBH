@@ -7,10 +7,10 @@ using System.Windows.Forms;
 
 namespace SWB_OptionPackageInstaller
 {
-   public class PackageGridModel
+    public class PackageGridModel
     {
-
         #region Properties
+
         private bool _installCell;
 
         public bool InstallCell
@@ -19,8 +19,9 @@ namespace SWB_OptionPackageInstaller
             set { _installCell = value; }
         }
 
-        private  string _optionPackageName = string.Empty;
-        public  string OptionPackageName
+        private string _optionPackageName = string.Empty;
+
+        public string OptionPackageName
         {
             get
             {
@@ -32,8 +33,9 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
-        private  string _optionPackageVersion = string.Empty;
-        public  string Version
+        private string _optionPackageVersion = string.Empty;
+
+        public string Version
         {
             get
             {
@@ -43,15 +45,35 @@ namespace SWB_OptionPackageInstaller
             {
                 _optionPackageVersion = value;
             }
-        } 
-        #endregion
+        }
 
+        private int _optionPackageCount = 0;
 
+        public int No
+        {
+            get
+            {
+                return _optionPackageCount;
+            }
+            set
+            {
+                _optionPackageCount = value;
+            }
+        }
 
-        public PackageGridModel(string optionPackageName,string optionPackageVersion,bool installCell)
+        #endregion Properties
+
+        public PackageGridModel(string optionPackageName, string optionPackageVersion, bool installCell)
         {
             OptionPackageName = optionPackageName;
             Version = optionPackageVersion;
+            InstallCell = installCell;
+        }
+
+        public PackageGridModel(string optionPackageName, int optionPackageNo, bool installCell)
+        {
+            OptionPackageName = optionPackageName;
+            No = optionPackageNo;
             InstallCell = installCell;
         }
     }

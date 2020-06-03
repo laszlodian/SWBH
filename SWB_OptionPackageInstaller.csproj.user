@@ -4,4 +4,17 @@
     <StartArguments>
     </StartArguments>
   </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory>\\kuka.int.kuka.com\t\transfer\dian\swbbhelper\|publish\|//kuka.int.kuka.com/t/trasfer/dian/swb/|\\kuka.int.kuka.com\t\transfer\dian\SwbHelperTool\|\\kuka.int.kuka.com/t/trasfer/dian/swb/</PublishUrlHistory>
+    <InstallUrlHistory>http://localhost:8080/|http://localhost/SWB_OptionPackageInstaller/|\\kuka.int.kuka.com\t\transfer\dian\swbbhelper\|\\kuka.int.kuka.com\t\transfer\dian\swbbhelp\</InstallUrlHistory>
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>true</VerifyUploadedFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableSecurityDebugging>false</EnableSecurityDebugging>
+  </PropertyGroup>
 </Project>

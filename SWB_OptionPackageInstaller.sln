@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWB_OptionPackageInstaller", "SWB_OptionPackageInstaller.csproj", "{1BF8FF4C-AA1B-49A2-B493-5BA498D07C6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestToolsBase", "..\TestToolBase\TestToolsBase.csproj", "{C126C04E-AD78-476F-B2C2-272C7CE9D532}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{1BF8FF4C-AA1B-49A2-B493-5BA498D07C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BF8FF4C-AA1B-49A2-B493-5BA498D07C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BF8FF4C-AA1B-49A2-B493-5BA498D07C6A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C126C04E-AD78-476F-B2C2-272C7CE9D532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C126C04E-AD78-476F-B2C2-272C7CE9D532}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C126C04E-AD78-476F-B2C2-272C7CE9D532}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C126C04E-AD78-476F-B2C2-272C7CE9D532}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

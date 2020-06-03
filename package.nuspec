@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <!--*-->
+    <id>SWB_OptionPackageInstaller</id>
+    <!--*-->
+    <version>1.0.0</version>
+    <title>SWB_OptionPackageInstaller</title>
+    <!--*-->
+    <authors>KUKA AG</authors>
+    <owners>KUKA AG</owners>
+    <!--
+    <licenseUrl></licenseUrl>
+    <projectUrl></projectUrl>
+    <iconUrl></iconUrl>
+-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!--*-->
+    <description>*</description>
+    <!--*-->
+    <releaseNotes>*</releaseNotes>
+    <copyright>Copyright © KUKA AG 2020</copyright>
+    <tags>
+    </tags>
+    <dependencies>
+      <!--
+      <dependency id="SampleDependency" version="1.0" />
+-->
+    </dependencies>
+  </metadata>
+</package>

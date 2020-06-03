@@ -12,7 +12,7 @@ namespace SWB_OptionPackageInstaller.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -37,14 +37,215 @@ namespace SWB_OptionPackageInstaller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server = localhost;Port= 5432; Database = swb_installs;User ID = swb_installs_adm" +
-            "in;Password = admin")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server = 172.22.246.177; Port= 5432; Database = swb_installs; User ID = swb_insta" +
+            "lls_admin; Password = admin")]
         public string DBConnectionString {
             get {
                 return ((string)(this["DBConnectionString"]));
             }
             set {
                 this["DBConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseLocalProperties {
+            get {
+                return ((bool)(this["UseLocalProperties"]));
+            }
+            set {
+                this["UseLocalProperties"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>com.kuka.kmpOmniMove.swb.repository.zip</string>
+  <string>com.kuka.nav.core.swb.repository.zip</string>
+  <string>com.kuka.nav.fineloc.swb.repository.zip</string>
+  <string>com.kuka.nav.finepos.swb.repository.zip</string>
+  <string>com.kuka.nav.fleet.swb.repository.zip</string>
+  <string>com.kuka.nav.free.swb.repository.zip</string>
+  <string>com.kuka.nav.kmp.diffdrive1500s.lift.swb.repository.zip</string>
+  <string>com.kuka.nav.lift.swb.repository.zip</string>
+  <string>com.kuka.nav.object.handling.swb.repository.zip</string>
+  <string>com.kuka.nav.object.manager.swb.repository.zip</string>
+  <string>com.kuka.nav.ui.swb.repository.zip</string>
+  <string>com.kuka.nav.virtualLine.swb.repository.zip</string>
+  <string>com.kuka.nav.virtualPath.swb.repository.zip</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ArtifactsNeededToCopy {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ArtifactsNeededToCopy"]));
+            }
+            set {
+                this["ArtifactsNeededToCopy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>0000354955;00;KUKA.NavSolution Backup 1.16.zip</string>
+  <string>0000354959;00;KUKA.NavSolution MapEditor 1.16.zip</string>
+  <string>0000358676;00;KUKA.NavSolution Lift 1.16 KMP1500-S.zip</string>
+  <string>0000356423;00;KUKA.NavSolution 1.16 KMP1500-S.zip</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ProductsNeededToCopy {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ProductsNeededToCopy"]));
+            }
+            set {
+                this["ProductsNeededToCopy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FillTextBoxes {
+            get {
+                return ((bool)(this["FillTextBoxes"]));
+            }
+            set {
+                this["FillTextBoxes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\KUKA.int.kuka.com\\s\\KROS_Pool\\Daily\\NavigationSolution\\master\\")]
+        public string DefaultRemoteDropDownFolder {
+            get {
+                return ((string)(this["DefaultRemoteDropDownFolder"]));
+            }
+            set {
+                this["DefaultRemoteDropDownFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("LastBuildDir.txt")]
+        public string LastBuildNumberTextFile {
+            get {
+                return ((string)(this["LastBuildNumberTextFile"]));
+            }
+            set {
+                this["LastBuildNumberTextFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsAdvancedMode {
+            get {
+                return ((bool)(this["IsAdvancedMode"]));
+            }
+            set {
+                this["IsAdvancedMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("p:\\SWBHelper_Test\\CreatedSWBs\\")]
+        public string LastUsedSWBPath {
+            get {
+                return ((string)(this["LastUsedSWBPath"]));
+            }
+            set {
+                this["LastUsedSWBPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("p:\\SWBHelper_Test\\OPs\\")]
+        public string LastUsedOptionPackagePath {
+            get {
+                return ((string)(this["LastUsedOptionPackagePath"]));
+            }
+            set {
+                this["LastUsedOptionPackagePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SunriseWorkbench-1.16.2.16-win32-x86.zip")]
+        public string SWBZipFileName {
+            get {
+                return ((string)(this["SWBZipFileName"]));
+            }
+            set {
+                this["SWBZipFileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AppSetting")]
+        public string AppSetting {
+            get {
+                return ((string)(this["AppSetting"]));
+            }
+            set {
+                this["AppSetting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StoreToDB {
+            get {
+                return ((bool)(this["StoreToDB"]));
+            }
+            set {
+                this["StoreToDB"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        public string DefaultOptionPackagePath {
+            get {
+                return ((string)(this["DefaultOptionPackagePath"]));
+            }
+            set {
+                this["DefaultOptionPackagePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        public string DefaultSWBPath {
+            get {
+                return ((string)(this["DefaultSWBPath"]));
+            }
+            set {
+                this["DefaultSWBPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InstallAllFoundPackages {
+            get {
+                return ((bool)(this["InstallAllFoundPackages"]));
+            }
+            set {
+                this["InstallAllFoundPackages"] = value;
             }
         }
     }

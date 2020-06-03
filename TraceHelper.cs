@@ -77,7 +77,7 @@ namespace SWB_OptionPackageInstaller
        {
            Trace.TraceError("Exception at {0} SqlCommand CommandText: {1}", classInstance.GetType().Name, sqlStatement.CommandText);
            Trace.TraceError("Exception at {0} SqlCommand Connection: {1}", classInstance.GetType().Name, sqlStatement.Connection);
-           Trace.TraceError("Exception at {0} SqlCommand LastInsertedOID: {1}", classInstance.GetType().Name, sqlStatement.LastInsertedOID);
+     //      Trace.TraceError("Exception at {0} SqlCommand LastInsertedOID: {1}", classInstance.GetType().Name, sqlStatement.LastInsertedOID);
            Trace.TraceError("Exception at {0} SqlCommand Parameters: {1}", classInstance.GetType().Name, sqlStatement.Parameters);
            Trace.TraceError("Exception at {0} SqlCommand UpdatedRowSource: {1}", classInstance.GetType().Name, sqlStatement.UpdatedRowSource);
 
