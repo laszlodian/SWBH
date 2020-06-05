@@ -43,12 +43,20 @@ namespace SWB_OptionPackageInstaller
 
         private void btOptionsOK_Click(object sender, EventArgs e)
         {
+            StoreThatThereSavedValues();
+
             Properties.Settings.Default.DefaultOptionPackagePath = tbDefaultPathForPackages.Text;
             Properties.Settings.Default.DefaultSWBPath = tbDefaultPathForSWB.Text;
             Properties.Settings.Default.InstallAllFoundPackages = cbInstallAllFoundOPs.Checked;
             Properties.Settings.Default.Save();
 
             this.Close();
+        }
+
+        private void StoreThatThereSavedValues()
+        {
+            Properties.Settings.Default.HasSavedValues = true;
+            Properties.Settings.Default.Save();
         }
     }
 }

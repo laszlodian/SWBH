@@ -43,6 +43,22 @@ namespace SWB_OptionPackageInstaller
 
         #region Properties
 
+        private DirectoryInfo lastBuildDir;
+
+        public DirectoryInfo LastBuildDir
+        {
+            get { return lastBuildDir; }
+            set { lastBuildDir = value; }
+        }
+
+        private List<string> productsList = new List<string>();
+
+        public List<string> ProductsList
+        {
+            get { return productsList; }
+            set { productsList = value; }
+        }
+
         private int opCountInFolder;
 
         public int OPCountInFolder { get { return opCountInFolder; } set { opCountInFolder = value; } }
@@ -65,7 +81,7 @@ namespace SWB_OptionPackageInstaller
 
         private string remoteDropDownPath = @"\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\";
 
-        public string RemoteDropDownPath
+        public string RemoteDropDownRootPath
         {
             get { return remoteDropDownPath; }
             set { remoteDropDownPath = value; }
@@ -137,6 +153,9 @@ namespace SWB_OptionPackageInstaller
         private bool collectionFinished;
         public bool CollectionFinished { get { return collectionFinished; } set { collectionFinished = value; } }
 
+        private List<string> artifactList = new List<string>();
+        public List<string> ArtifactList { get { return artifactList; } set { artifactList = value; } }
+
         public string actProduct;//{ get; private set; }
 
         #endregion Properties
@@ -149,6 +168,7 @@ namespace SWB_OptionPackageInstaller
         //   private BindingSource bindingSourceForIstalledPackages = new BindingSource();
         private List<FileInfo> opsInFolder = new List<FileInfo>();
 
+        public List<Dictionary<string, bool>> copiedArtifacts = new List<Dictionary<string, bool>>();
         private bool swbFoundInfolder;
         private BackgroundWorker bgWorker;
         private int progress = 0;
@@ -161,8 +181,6 @@ namespace SWB_OptionPackageInstaller
 
         #endregion Variables
 
-        private DirectoryInfo lastBuildDirectory = null;
-
         public CommandControler()
         {
             Instance = this;
@@ -173,6 +191,8 @@ namespace SWB_OptionPackageInstaller
         }
 
         private Thread unzipSWBThread;
+        private string lastBuildDirName;
+        public string LastBuildDirName { get { return lastBuildDirName; } set { lastBuildDirName = value; } }
 
         private delegate void unzipSWBThreadStarting(Action unzippingSWB);
 
@@ -375,7 +395,7 @@ namespace SWB_OptionPackageInstaller
             {
                 SQLManager.Instance.StoreInstall();
             }
-            Form1.Instance.SetStartSWBButtonVisible();
+            Form1.Instance.SetButtonsVisible();
         }
 
         public void IterateOverFeatures(List<string> features)
@@ -429,7 +449,7 @@ namespace SWB_OptionPackageInstaller
                 }
             }
             Trace.TraceInformation("PackagesInfo Count: {0}; Versions Count: {1}", PackagesInfo.Count, versions.Count);
-          //  Form1.Instance.handle.Set();
+            //  Form1.Instance.handle.Set();
             if (versions.Count == 0)
             {
                 ShowImportantMessageDialog(String.Format("No compatible file found in the given folder.\r\nMay be a mistake?\r\nYou gave this path: {0}", Form1.Instance.PathOfSWB));
@@ -520,15 +540,14 @@ namespace SWB_OptionPackageInstaller
                 if (actDirectory.Contains(buildNumber))
                 {
                     sourceFolderOfRemoteBuild = new DirectoryInfo(actDirectory);
+                    break;
                 }
             }
 
             Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderOfRemoteBuild));
 
             if (sourceFolderOfRemoteBuild == null)
-            {
                 throw new Exception("lastBuildDirectory couldn't found!");
-            }
 
             return sourceFolderOfRemoteBuild;
         }
@@ -559,7 +578,7 @@ namespace SWB_OptionPackageInstaller
             DialogResult res = new ChooseDirectoryForm().ShowDialog();
             if (res == DialogResult.Yes)
             {
-                PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
+                //PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
             }
         }
 
@@ -569,11 +588,11 @@ namespace SWB_OptionPackageInstaller
             Form1.Instance.UpdateStatus("Nececcary option packages has been copied from the latest NAV master build");
 
             FillDatagridView();
-            ConfigureCollectedOPsDatagrid(collectedOPs);
+            //ConfigureCollectedOPsDatagrid(collectedOPs);
 
             // ThreadManager.Instance.WaitAllThreadToFinishWork();
 
-            CommandControler.Instance.CheckIfInstallationNeeded();
+            //     CommandControler.Instance.CheckIfInstallationNeeded();
         }
 
         public void FillDatagridView()
@@ -595,21 +614,17 @@ namespace SWB_OptionPackageInstaller
 
         private void CreateSWBTestDirectoryHierarchy()
         {
-            string destinationDirString = string.Format(@"c:\_SWB\{0}_{1}_{2}\", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day);
-
-            DialogResult res = MessageBox.Show(String.Format("The program will create the following libraries:\r\n-'logs'\r\n-{0} (to unzip SWB)\r\nAre u agreed?", destinationDirString), "Creating Logs directory", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (res == DialogResult.No)
+            if (Form1.Instance.IsLocalPathConfigured())
             {
-                UpdateStatus("Cleaning up resources...", "lbInfoText");
-                new CleanUpManager();
+                destinationDir = new DirectoryInfo(Form1.Instance.LocalPath);
             }
+            else
+                destinationDir = new DirectoryInfo(string.Format(@"c:\_SWB\{0}_{1}_{2}\", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day));
 
-            logDir = Directory.CreateDirectory(Path.Combine(string.Format(@"c:\_SWB\{0}_{1}_{2}\{3}", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day, "logs")));
-            destinationDir = Directory.CreateDirectory(Path.Combine(string.Format(@"c:\_SWB\{0}_{1}_{2}\", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day)));
-            swbDir = Directory.CreateDirectory(string.Format(@"c:\_SWB\{0}_{1}_{2}\SWB", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day));
+            logDir = Directory.CreateDirectory(Path.Combine(destinationDir.FullName, "logs"));
+            swbDir = Directory.CreateDirectory(Path.Combine(destinationDir.FullName, "SWB"));
 
-            if (logDir.Exists && destinationDir.Exists && swbDir.Exists)
+            if (logDir.Exists && swbDir.Exists)
             {
                 Trace.TraceInformation("Directories succcesfully created");
             }
@@ -617,27 +632,31 @@ namespace SWB_OptionPackageInstaller
 
         private void ReadOutLastBuildNumber(string lastBuildPathFile)
         {
-            FileStream fileStream = new FileStream(lastBuildPathFile, FileMode.Open, FileAccess.Read);
-            string line = string.Empty;
-
-            using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            using (FileStream fileStream = new FileStream(lastBuildPathFile, FileMode.Open, FileAccess.Read))
             {
-                line = streamReader.ReadLine();
-                streamReader.Close();
+                string line = string.Empty;
+
+                using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    line = streamReader.ReadLine();
+                    streamReader.Close();
+                }
+                fileStream.Close();
+                lastBuildDirName = line;
             }
 
-            if (string.IsNullOrEmpty(line))
+            if (string.IsNullOrEmpty(LastBuildDirName))
             {
                 ShowImportantMessageDialog("Last Build Number Not Found!", "Couldn't read out last build number", MessageBoxIcon.Error);
                 ShowImportantMessageDialog("Application is now exit...", "Exit application - No Build number found");
 
                 Application.Exit();
             }
-            //else
-            //    ShowImportantMessageDialog(string.Format("Last build number: {0}", line.Trim()));
 
-            Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", line.Trim()));
-            PreparingToCopyOPsFromRemotePath(lastBuildPathFile, line);
+            Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildDirName));
+            Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildDirName));
+
+            //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
         }
 
         private void ShowImportantMessageDialog(string textToShow, string captionOfDialog = "Important Information")
@@ -650,36 +669,36 @@ namespace SWB_OptionPackageInstaller
             MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
 
-        private void PreparingToCopyOPsFromRemotePath(string lastBuildPathFile, string line)
+        private void PreparingToCopyOPsFromRemotePath(string lastBuildPathFile, string lastBuildDirectoryName)
         {
             UpdateStatus("Application starts to copy the nececcary option packages, please be patient..", "lbInfoText");
-            ShowImportantMessageDialog("Application starts to copy the nececcary option packages, please be patient..");
+            //     ShowImportantMessageDialog("Application starts to copy the nececcary option packages, please be patient..");
 
-            lastBuildPath = GetLastBuildDirectory(line, lastBuildPathFile);
+            lastBuildPath = GetLastBuildDirectory(lastBuildDirectoryName, lastBuildPathFile);
 
             ReadOutSWBPathFromJSON(lastBuildPath);
 
-            CopyOptionPackagesFromRemoteDropDownFolder(line, RemoteDropDownPath);
+            CopyOptionPackagesFromRemoteDropDownFolder(LastBuildPath.FullName.Substring(LastBuildPath.FullName.LastIndexOf("\\") + 1), LastBuildPath.FullName);
         }
 
-        private DirectoryInfo GetLastBuildDirectory(string buildNumber, string lastBuildPathFile)
+        private DirectoryInfo GetLastBuildDirectory(string buildNumber, string lastBuildPathDir)
         {
-            foreach (string actDirectory in (Directory.GetDirectories(lastBuildPathFile.Substring(0, lastBuildPathFile.LastIndexOf('L')))))
+            foreach (string actDirectory in Directory.GetDirectories(lastBuildPathDir.Substring(0, lastBuildPathDir.LastIndexOf("\\"))))
             {
                 if (actDirectory.Contains(buildNumber))
                 {
-                    lastBuildDirectory = new DirectoryInfo(actDirectory);
+                    lastBuildDir = new DirectoryInfo(actDirectory);
                     break;
                 }
             }
 
-            if (lastBuildDirectory == null)
+            if (lastBuildDir == null)
             {
                 ShowImportantMessageDialog("Last Build Directory not found!");
                 Application.Exit();
             }
 
-            return lastBuildDirectory;
+            return lastBuildDir;
         }
 
         private void ReadOutSWBPathFromJSON(DirectoryInfo lastBuildDir)
@@ -702,6 +721,7 @@ namespace SWB_OptionPackageInstaller
                                 Thread copyProductThread = new Thread(new ThreadStart(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product")))));
                                 //   copyProductThread.Start();
                                 ThreadManager.Instance.StartAndWaitOneThread(copyProductThread);
+                                sr.Close();
                                 break;
                             }
                             readedLine = sr.ReadLine();
@@ -720,7 +740,7 @@ namespace SWB_OptionPackageInstaller
             foreach (string pkg in collectedOPs)
             {
                 Form1.Instance.UpdateStatus(string.Format("Add to datagrid: {0}", pkg));
-                Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, lastBuildDirectory.Name, true));
+                Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, lastBuildDir.Name, true));
                 i++;
             }
 
@@ -753,8 +773,12 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
-        private void CopyProcessOfArtifactsAndProducts(DirectoryInfo lastBuildDirectory)
+        private void CopyProcessOfArtifactsAndProducts(DirectoryInfo localPath, DirectoryInfo lastBuildDirectory)
         {
+            string[] artifactsArray = new string[13]; ;
+            Properties.Settings.Default.ArtifactsNeededToCopy.CopyTo(artifactsArray, 0);
+            artifactList.AddRange(artifactsArray);
+
             Thread cpyArtifacts = new Thread(new ThreadStart(() =>
             {
                 foreach (string item in Directory.GetFiles(String.Format("{0}{1}{2}", lastBuildDirectory.FullName, Path.DirectorySeparatorChar, "Artifacts"), "*.zip"))
@@ -764,13 +788,25 @@ namespace SWB_OptionPackageInstaller
                     {
                         Form1.Instance.UpdateTextBox(string.Format("Copying file: {0}", Path.GetFileName(item)));
 
-                        CopyArtifactsFromRemoteFolder(item);
+                        //Task.Run(() =>
+                        //{
+                        //    artifactList.AsParallel().ForAll(file =>
+                        //    {
+                        //        string newFile = Path.Combine(destinationDir.FullName, file);
+                        //        System.IO.File.Copy(file, newFile);
+                        //        collectedOPs.Add(Path.GetFileName(file));
+                        //    });
+                        //});
 
-                        collectedOPs.Add(Path.GetFileName(item));
+                        CopyArtifactsFromRemoteFolder(item);
                     }
                 }
             }));
             ThreadManager.Instance.StartAndWaitOneThread(cpyArtifacts);
+
+            string[] productsArray = new string[4];
+            Properties.Settings.Default.ProductsNeededToCopy.CopyTo(productsArray, 0);
+            ProductsList.AddRange(productsArray);
 
             Thread cpyProducts = new Thread(new ThreadStart(() =>
             {
@@ -780,26 +816,87 @@ namespace SWB_OptionPackageInstaller
                     if (Properties.Settings.Default.ProductsNeededToCopy.Contains(Path.GetFileName(item)))
                     {
                         Form1.Instance.UpdateTextBox(string.Format("Copying file: {0}", Path.GetFileName(item)));
+                        //Task.Run(() =>
+                        //{
+                        //    productsList.AsParallel().ForAll(file =>
+                        //    {
+                        //        string newFile = Path.Combine(destinationDir.FullName, file);
+                        //        System.IO.File.Copy(file, newFile);
+                        //        collectedOPs.Add(Path.GetFileName(file));
+                        //    });
+                        //});
 
                         CopyProductsFromRemoteFolder(item);
                         // File.Copy(item, String.Format("{0}{1}{2}", Path.GetDirectoryName(destinationDir.FullName), Path.DirectorySeparatorChar, Path.GetFileName(item)), true);//));
-                        collectedOPs.Add(Path.GetFileName(item));
+                        // collectedOPs.Add(Path.GetFileName(item));
                         UpdateStatus("Copy Product option packages has finished.", "tbInfo");
                     }
                 }
             }));
             ThreadManager.Instance.StartAndWaitOneThread(cpyProducts);
 
-            if (!CheckOptionPackagesCount(destinationDir.GetFiles("*.zip", SearchOption.TopDirectoryOnly).Length - 1, Properties.Settings.Default.ArtifactsNeededToCopy.Count + Properties.Settings.Default.ProductsNeededToCopy.Count))
+            CheckEachOPsIsCopied();
+        }
+
+        private void CheckEachOPsIsCopied()
+        {
+            foreach (FileInfo fileInfo in destinationDir.GetFiles("*.zip"))
             {
-                DialogResult result = MessageBox.Show("The option packages in the last Build directory is less than the expected. Some of them are missing.\r\nDo you want to search for a previously build?", "Not all option packages are found!", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                if (Properties.Settings.Default.ArtifactsNeededToCopy.Contains(fileInfo.Name))
                 {
-                    CommandControler.Instance.CollectAndShowAvailableBuildDirectories(lastBuildDirectory);
+                    Dictionary<string, bool> dictionary = new Dictionary<string, bool>();
+                    dictionary.Add(fileInfo.Name, true);
+                    copiedArtifacts.Add(dictionary);
+                }
+                if (Properties.Settings.Default.ProductsNeededToCopy.Contains(fileInfo.Name))
+                {
+                    Dictionary<string, bool> dictionary = new Dictionary<string, bool>();
+                    dictionary.Add(fileInfo.Name, true);
+                    copiedArtifacts.Add(dictionary);
                 }
             }
-            else
-                CollectionFinished = true;
+            if (copiedArtifacts.Count != Properties.Settings.Default.ArtifactsNeededToCopy.Count + Properties.Settings.Default.ProductsNeededToCopy.Count)
+            {
+                Dictionary<string, bool> missingDict = new Dictionary<string, bool>();
+                ShowImportantMessageDialog("Missing option packages!", "Missing artifacts!", MessageBoxIcon.Warning);
+
+                foreach (string item in Properties.Settings.Default.ArtifactsNeededToCopy)
+                {
+                    foreach (Dictionary<string, bool> copiedOPs in copiedArtifacts)
+                    {
+                        if (!copiedOPs.ContainsKey(item))
+                        {
+                            Dictionary<string, bool> dict = new Dictionary<string, bool>();
+                            dict.Add(item, false);
+                            copiedArtifacts.Add(dict);
+                        }
+                    }
+                }
+                foreach (string item in Properties.Settings.Default.ProductsNeededToCopy)
+                {
+                    foreach (Dictionary<string, bool> copiedOPs in copiedArtifacts)
+                    {
+                        if (!copiedOPs.ContainsKey(item))
+                        {
+                            Dictionary<string, bool> dict = new Dictionary<string, bool>();
+                            dict.Add(item, false);
+                            copiedArtifacts.Add(dict);
+                        }
+                    }
+                }
+                foreach (Dictionary<string, bool> copiedOP in copiedArtifacts)
+                {
+                    List<string> missingOPs = new List<string>();
+                    bool res = false;
+
+                    copiedOP.TryGetValue(copiedOP.Keys.First(), out res);
+                    if (!res)
+                    {
+                        missingDict.Add(copiedOP.Keys.First(), res);
+                    }
+                }
+                ShowImportantMessageDialog(string.Format("Missing option packages: {0}", missingDict.Keys.ItemsToString(";")), "Missing Option Packages!", MessageBoxIcon.Error);
+            }
         }
 
         public bool Validate(TextBox textbox_in)
@@ -839,25 +936,6 @@ namespace SWB_OptionPackageInstaller
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     textBox_in.Text = fbd.SelectedPath;
-            }
-        }
-
-        private bool CheckPath(TextBox sender)
-        {
-            return Validate(sender as TextBox);
-        }
-
-        private bool CheckOptionPackagesCount(int localOPCount, int expectedOPCount)
-        {
-            if (localOPCount != expectedOPCount)
-            {
-                allOPsFound = false;
-                return false;
-            }
-            else
-            {
-                allOPsFound = true;
-                return true;
             }
         }
 
@@ -917,7 +995,6 @@ namespace SWB_OptionPackageInstaller
                 customFileCopier.OnProgressChanged += CustomFileCopier_OnProgressChanged;
 
                 Thread customArtifactsCopyThread = new Thread(new ThreadStart(() => customFileCopier.Copy()));
-                //   customArtifactsCopyThread.Start();
 
                 ThreadManager.Instance.StartAndWaitOneThread(customArtifactsCopyThread);
             }
@@ -933,9 +1010,9 @@ namespace SWB_OptionPackageInstaller
         {
             DirectoryInfo lastBuildDirectory = null;
 
-            lastBuildDirectory = CommandControler.Instance.LookUpForLastBuildDirectory(buildNumber, lastBuildPath);
+            //lastBuildDirectory = CommandControler.Instance.LookUpForLastBuildDirectory(buildNumber, lastBuildPath);
 
-            Thread copyThread = new Thread(new ThreadStart(() => CopyProcessOfArtifactsAndProducts(lastBuildDirectory)));
+            Thread copyThread = new Thread(new ThreadStart(() => CopyProcessOfArtifactsAndProducts(DestinationDir, LastBuildPath)));
             ThreadManager.Instance.StartAndWaitOneThread(copyThread);
         }
 
@@ -943,9 +1020,9 @@ namespace SWB_OptionPackageInstaller
         {
             CreateSWBTestDirectoryHierarchy();
 
-            ReadOutLastBuildNumber(Path.Combine(RemoteDropDownPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
+            ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
 
-            PreparingToCopyOPsFromRemotePath(RemoteDropDownPath, RemoteDropDownPath.Substring(RemoteDropDownPath.LastIndexOf("\\") + 1));
+            PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath, RemoteDropDownRootPath.Substring(RemoteDropDownRootPath.LastIndexOf("\\") + 1));
 
             return;
         }

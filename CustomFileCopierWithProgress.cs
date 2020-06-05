@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace SWB_OptionPackageInstaller
 {
@@ -31,7 +33,7 @@ namespace SWB_OptionPackageInstaller
             {
                 long fileLength = source.Length;
 
-                using (FileStream dest = new FileStream(DestFilePath, FileMode.CreateNew, FileAccess.Write))
+                using (FileStream dest = new FileStream(DestFilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                 {
                     long totalBytes = 0;
                     int currentBlockSize = 0;

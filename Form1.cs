@@ -22,6 +22,22 @@ namespace SWB_OptionPackageInstaller
     {
         #region Properties
 
+        private string localPath;
+
+        public string LocalPath
+        {
+            get { return localPath; }
+            set { localPath = value; }
+        }
+
+        private bool isLocalPathSet;
+
+        public bool IsLocalPathSet
+        {
+            get { return isLocalPathSet; }
+            set { isLocalPathSet = value; }
+        }
+
         private Control control;
 
         public Control Control
@@ -58,6 +74,12 @@ namespace SWB_OptionPackageInstaller
         {
             get { return pathsAreValid; }
             set { pathsAreValid = value; }
+        }
+
+        public void InsertSavedValues()
+        {
+            tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+            tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
         }
 
         private DirectoryInfo lastBuildPath;
@@ -130,6 +152,60 @@ namespace SWB_OptionPackageInstaller
         #endregion Variables
 
         #region Delegates
+
+        public delegate void SetLocalPathTextBoxDelegate(bool active);
+
+        public void SetLocalPathTextBox(bool active)
+        {
+            if (active)
+            {
+                if (tbPathOfLocalFolder.InvokeRequired)
+                {
+                    tbPathOfLocalFolder.Invoke(new SetLocalPathTextBoxDelegate(SetLocalPathTextBox), active);
+                }
+                else
+                {
+                    tbPathOfLocalFolder.Enabled = true;
+                    tbPathOfLocalFolder.BackColor = Color.White;
+                    tbPathOfLocalFolder.ForeColor = Color.Black;
+                }
+            }
+            else
+            {
+                if (tbPathOfLocalFolder.InvokeRequired)
+                {
+                    tbPathOfLocalFolder.Invoke(new SetLocalPathTextBoxDelegate(SetLocalPathTextBox), active);
+                }
+                else
+                {
+                    tbPathOfLocalFolder.Enabled = true;
+                    tbPathOfLocalFolder.BackColor = Color.Gainsboro;
+                    tbPathOfLocalFolder.ForeColor = Color.Gray;
+                }
+            }
+        }
+
+        private delegate void SetStartSWBButtonVisibleDelegate();
+
+        public void SetButtonsVisible()
+        {
+            if (btCleanUp.InvokeRequired)
+            {
+                btCleanUp.Invoke(new SetStartSWBButtonVisibleDelegate(SetButtonsVisible));
+            }
+            else
+                btCleanUp.Visible = true;
+
+            if (btStartSWB.InvokeRequired)
+            {
+                btStartSWB.Invoke(new SetStartSWBButtonVisibleDelegate(SetButtonsVisible));
+            }
+            else
+            {
+                btStartSWB.Visible = true;
+                btStartSWB.Focus();
+            }
+        }
 
         public delegate void SetInstallationPageValuesDelegate();
 
@@ -257,11 +333,21 @@ namespace SWB_OptionPackageInstaller
             Instance = this;
             InitializeComponent();
 
+            cbPathOfLocalFolder_CheckedChanged(null, EventArgs.Empty);
+
             theTabControl = mainTabControl;
             tbServerPath = theTabControl.TabPages[2].Controls["tableLayoutPanel2"].Controls["tbOptionPackagesServer"] as TextBox;
 
-            tbPathOfSWB.Text = Properties.Settings.Default.LastUsedSWBPath;
-            tbPathOfPackages.Text = Properties.Settings.Default.LastUsedOptionPackagePath;
+            if (Properties.Settings.Default.HasSavedValues)
+            {
+                tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+                tbPathOfPackages.Text = Properties.Settings.Default.DefaultSWBPath;
+            }
+            else
+            {
+                tbPathOfSWB.Text = Properties.Settings.Default.LastUsedSWBPath;
+                tbPathOfPackages.Text = Properties.Settings.Default.LastUsedOptionPackagePath;
+            }
 
             TraceHelper.SetupListener();
             UpdateStatus("Loading Form1....");
@@ -272,12 +358,16 @@ namespace SWB_OptionPackageInstaller
             CommandControler.Instance.Validate(tbPathOfSWB);
             CommandControler.Instance.Validate(tbPathOfPackages);
 
-            Properties.Settings.Default.Save();
-
             UpdateStatus("Browse for a path or simlpy type it in to the textbox");
 
+            this.Shown += Form1_Shown;
             this.Load += SWBForm1_Load;
             this.FormClosed += Form1_FormClosed;
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            UpdateStatus("Initializing functions, and features...");
         }
 
         public Control GetReferencedControl(string controlName)
@@ -311,6 +401,21 @@ namespace SWB_OptionPackageInstaller
                 }
             }
             return c;
+        }
+
+        public bool IsLocalPathConfigured()
+        {
+            bool state = false;
+
+            if (cbPathOfLocalFolder.Checked)
+            {
+                state = true;
+                localPath = tbPathOfLocalFolder.Text;
+            }
+            else
+                state = false;
+
+            return state;
         }
 
         public void ConfigureDataGridView(string packagesList)
@@ -445,21 +550,6 @@ namespace SWB_OptionPackageInstaller
             this.mainTabControl.TabPages["tbPageOptionPackages"].Controls.Add(dgvInstalledOPs);
             dgvInstalledOPs.AutoSize = true;
             dgvInstalledOPs.Text = "Founded option packages - Choose which of them to install to SunriseWorkBench";
-        }
-
-        private delegate void SetStartSWBButtonVisibleDelegate();
-
-        public void SetStartSWBButtonVisible()
-        {
-            if (btStartSWB.InvokeRequired)
-            {
-                btStartSWB.Invoke(new SetStartSWBButtonVisibleDelegate(SetStartSWBButtonVisible));
-            }
-            else
-            {
-                btStartSWB.Visible = true;
-                btStartSWB.Focus();
-            }
         }
 
         public void EnumsAndComboBox_Load_For_CollectedOPs()
@@ -623,6 +713,20 @@ namespace SWB_OptionPackageInstaller
             UpdateStatus(string.Format("Deleting directory: {0}", PathOfSWB));
             Directory.Delete(Path.GetDirectoryName(PathOfSWB), true);
             UpdateStatus("Cleaning up finished");
+        }
+
+        private void cbPathOfLocalFolder_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbPathOfLocalFolder.Checked)
+            {
+                SetLocalPathTextBox(true);
+            }
+            else
+            {
+                tbPathOfLocalFolder.Enabled = true;
+                tbPathOfLocalFolder.BackColor = Color.Gainsboro;
+                tbPathOfLocalFolder.ForeColor = Color.Gray;
+            }
         }
     }
 }
