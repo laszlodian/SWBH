@@ -355,8 +355,8 @@ namespace SWB_OptionPackageInstaller
             dgvInstalledOPs.Dock = DockStyle.Fill;
             dgvInstalledOPs.BackgroundColor = Color.LightCyan;
 
-            CommandControler.Instance.Validate(tbPathOfSWB);
-            CommandControler.Instance.Validate(tbPathOfPackages);
+            ArtifactHandler.Instance.Validate(tbPathOfSWB);
+            ArtifactHandler.Instance.Validate(tbPathOfPackages);
 
             UpdateStatus("Browse for a path or simlpy type it in to the textbox");
 
@@ -615,17 +615,17 @@ namespace SWB_OptionPackageInstaller
 
         private void btBrowseSWBPath_Click(object sender, EventArgs e)
         {
-            CommandControler.Instance.OpenFolderBrowser(tbPathOfSWB);
+            ArtifactHandler.Instance.OpenFolderBrowser(tbPathOfSWB);
         }
 
         private void btBrowseForPackages_Click(object sender, EventArgs e)
         {
             if ((sender as Button).Name == "btBrowseSWBPath")
             {
-                CommandControler.Instance.OpenFolderBrowser(tbPathOfSWB);
+                ArtifactHandler.Instance.OpenFolderBrowser(tbPathOfSWB);
             }
             else
-                CommandControler.Instance.OpenFolderBrowser(tbPathOfPackages);
+                ArtifactHandler.Instance.OpenFolderBrowser(tbPathOfPackages);
         }
 
         private void tbPathOfSWB_TextChanged(object sender, EventArgs e)
@@ -640,7 +640,7 @@ namespace SWB_OptionPackageInstaller
 
         private void btCollect_Click(object sender, EventArgs e)
         {
-            CommandControler.Instance.PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
+            ArtifactHandler.Instance.PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
         }
 
         private void tbOptionPackagesServer_MouseHover(object sender, EventArgs e)

@@ -206,4 +206,7 @@ D:\SWBOptionPackageInstaller\obj\Debug\SWB_OptionPackageInstaller.csproj.CopyCom
 D:\SWBOptionPackageInstaller\obj\Debug\SWB_OptionPackageInstaller.exe
 D:\SWBOptionPackageInstaller\obj\Debug\SWB_OptionPackageInstaller.pdb
 D:\SWBOptionPackageInstaller\obj\Debug\SWB_OptionPackageInstaller.OptionsForm.resources
-D:\SWBOptionPackageInstaller\obj\Debug\SWB_OptionPackageInstaller.csprojAssemblyReference.cache
+D:\SWBOptionPackageInstaller\bin\Debug\ParallelExtensionsExtras.dll
+D:\SWBOptionPackageInstaller\bin\Debug\System.Collections.Async.dll
+D:\SWBOptionPackageInstaller\bin\Debug\System.IO.Pipelines.dll
+D:\SWBOptionPackageInstaller\bin\Debug\System.IO.Pipelines.xml
