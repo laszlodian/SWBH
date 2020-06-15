@@ -14,7 +14,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 using ThreadPoolHelper;
 using ThreadTaskManager.Library;
-using ThreadWorker;
 using Timer = System.Windows.Forms.Timer;
 
 namespace SWB_OptionPackageInstaller

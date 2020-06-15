@@ -145,7 +145,16 @@ namespace SWB_OptionPackageInstaller
         #endregion Variables
 
         #region Delegates
-
+        delegate void SetBackColorOfPathTextBoxDelegate(TextBox textBox, Color color);
+        public void SetBackColorOfPathTextBox(TextBox textBox, Color color)
+        {
+            if (textBox.InvokeRequired)
+            {
+                textBox.Invoke(new SetBackColorOfPathTextBoxDelegate(SetBackColorOfPathTextBox), textBox, color);
+            }
+            else
+                textBox.BackColor = color;
+        }
         public delegate void SetLocalPathTextBoxDelegate(bool active);
 
         public void SetLocalPathTextBox(bool active)
@@ -632,8 +641,15 @@ namespace SWB_OptionPackageInstaller
 
         private void tbPathOfPackages_TextChanged(object sender, EventArgs e)
         {
-            pathOfOptionPackages = Path.GetFullPath(tbPathOfPackages.Text);
+            if (Directory.Exists(Path.GetFullPath(tbPathOfPackages.Text)))
+            {
+                pathOfOptionPackages = Path.GetFullPath(tbPathOfPackages.Text);
+            }
+            else
+                SetBackColorOfPathTextBox(tbPathOfPackages,Color.Red);
+         
         }
+     
 
         private void btCollect_Click(object sender, EventArgs e)
         {
@@ -730,7 +746,7 @@ namespace SWB_OptionPackageInstaller
         {
             List<string> availableBuilds = new List<string>();
 
-            ArtifactHandler.Instance.ReadOutLastBuildNumber(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
+            ArtifactHandler.Instance.ReadOutLastBuildNumber(Path.Combine( Properties.Settings.Default.DefaultRemoteDropDownFolder, Properties.Settings.Default.LastBuildNumberTextFile));
 
             availableBuilds = CommandControler.Instance.CollectAndShowAvailableBuildDirectories(new DirectoryInfo(ArtifactHandler.Instance.RemoteDropDownRootPath));
 

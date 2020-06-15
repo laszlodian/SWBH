@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,13 +29,13 @@ namespace SWB_OptionPackageInstaller
 
         #region Properties
 
-        private byte[] copyBuffer;
+        //private byte[] copyBuffer;
 
-        public byte[] CopyBuffer
-        {
-            get { return copyBuffer; }
-            set { copyBuffer = value; }
-        }
+        //public byte[] CopyBuffer
+        //{
+        //    get { return copyBuffer; }
+        //    set { copyBuffer = value; }
+        //}
 
         private DirectoryInfo destinationDir;
 
@@ -44,29 +45,29 @@ namespace SWB_OptionPackageInstaller
             set { destinationDir = value; }
         }
 
-        public List<string> PackagesNames
-        {
-            get { return packagesNames; }
-            set { packagesNames = value; }
-        }
+        //public List<string> PackagesNames
+        //{
+        //    get { return packagesNames; }
+        //    set { packagesNames = value; }
+        //}
 
         private DirectoryInfo logDir;
 
         private DirectoryInfo lastBuildDir;
 
-        private string artifactToCopy;
+        //private string artifactToCopy;
 
-        public string ArtifactToCopy
-        {
-            get { return artifactToCopy; }
-            set { artifactToCopy = value; }
-        }
+        //public string ArtifactToCopy
+        //{
+        //    get { return artifactToCopy; }
+        //    set { artifactToCopy = value; }
+        //}
 
-        public DirectoryInfo LastBuildDir
-        {
-            get { return lastBuildDir; }
-            set { lastBuildDir = value; }
-        }
+        //public DirectoryInfo LastBuildDir
+        //{
+        //    get { return lastBuildDir; }
+        //    set { lastBuildDir = value; }
+        //}
 
         private List<string> productsList = new List<string>();
 
@@ -76,9 +77,9 @@ namespace SWB_OptionPackageInstaller
             set { productsList = value; }
         }
 
-        private int opCountInFolder;
+        //private int opCountInFolder;
 
-        public int OPCountInFolder { get { return opCountInFolder; } set { opCountInFolder = value; } }
+        //public int OPCountInFolder { get { return opCountInFolder; } set { opCountInFolder = value; } }
 
         private List<string> collectedOPs;
 
@@ -127,7 +128,6 @@ namespace SWB_OptionPackageInstaller
 
         public string SWBZipFilePath { get { return sWBZipFilePath; } set { sWBZipFilePath = value; } }
 
-        private Thread th;
         private string optionPackageList;
 
         public string OptionPackageList
@@ -153,7 +153,6 @@ namespace SWB_OptionPackageInstaller
 
         private DirectoryInfo lastBuildPath;
 
-        public DirectoryInfo LastBuildPath { get { return lastBuildPath; } set { lastBuildPath = value; } }
 
         public string ActProduct { get { return actProduct; } set { actProduct = value; } }
 
@@ -162,16 +161,17 @@ namespace SWB_OptionPackageInstaller
 
         public string actProduct;//{ get; private set; }
 
-        private string lastBuildDirName;
         private StringCollection _products;
         public string[] productsArray = new string[4];
-        private string LastBuildNumber;
+    
+        public string LastBuildNumber{get{ return lastBuildNumber; }set{ lastBuildNumber = value; } }
+        private string lastBuildNumber;
+    
+        private DirectoryInfo lastBuildFilePath;
+        public DirectoryInfo LastBuildFilePath { get { return lastBuildFilePath; } set{lastBuildFilePath=value; } }
 
-        public string LastBuildDirName
-        {
-            get { return lastBuildDirName; }
-            set { lastBuildDirName = value; }
-        }
+        public DirectoryInfo LastBuildPath { get { return lastBuildPath; } set { lastBuildPath = value; } }
+
 
         #endregion Properties
 
@@ -233,78 +233,80 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
-        public void ReadOutLastBuildNumber(string lastBuildPathFile)
+        public string ReadOutLastBuildNumber(string lastBuildFilePath)
         {
-            using (FileStream fileStream = new FileStream(Path.GetFullPath(lastBuildPathFile.Replace("\\", "/")), FileMode.Open, FileAccess.Read))
-            {
+            
                 string line = string.Empty;
 
-                using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
-                {
-                    line = streamReader.ReadLine();
-                    streamReader.Close();
-                }
-                fileStream.Close();
-                lastBuildDirName = line;
+                    using (FileStream fileStream = new FileStream(lastBuildFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                        {
+                            line = streamReader.ReadLine();
+                            streamReader.Close();
+                        }
+
+                        fileStream.Close();
+                        lastBuildNumber = line;
+                    }
+                    if (string.IsNullOrEmpty(LastBuildNumber))
+                    {
+                        //MessageBox.Show("Last Build Number Not Found!", "Couldn't read out last build number", MessageBoxIcon.Error);
+                        MessageBox.Show("Application is now exit...", "Exit application - No Build number found");
+
+                        Application.Exit();
+                    }
+
+                    Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildNumber));
+                    Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildNumber));
+                
+                return LastBuildNumber;
+                //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
             }
-
-            if (string.IsNullOrEmpty(LastBuildDirName))
-            {
-                //MessageBox.Show("Last Build Number Not Found!", "Couldn't read out last build number", MessageBoxIcon.Error);
-                MessageBox.Show("Application is now exit...", "Exit application - No Build number found");
-
-                Application.Exit();
-            }
-
-            Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildDirName));
-            Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildDirName));
-
-            //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
-        }
+        
 
         public void PrepareThenCopyResources()
         {
             //Create the folder architecture on local computer
             CreateSWBTestDirectoryHierarchy();
             //Read out the build number from the txt file on the server
-            LastBuildNumber = RemoteDropDownRootPath.Substring(RemoteDropDownRootPath.LastIndexOf("\\") + 1);
+            lastBuildFilePath =new DirectoryInfo( Path.Combine(Properties.Settings.Default.DefaultRemoteDropDownFolder,Properties.Settings.Default.LastBuildNumberTextFile));
             //      ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
             //Copy the artifacts and products from the newest build
-            PreparingToCopyOPsFromRemotePath(/*LastBuildDir, LastBuildNumber*/);
+            PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath);
         }
 
-        private void PreparingToCopyOPsFromRemotePath( )
+        private void PreparingToCopyOPsFromRemotePath(string navServerPath)
         {
-            //     UpdateStatus("Application starts to copy the nececcary option packages, please be patient..", "lbInfoText");
-            //     ShowImportantMessageDialog("Application starts to copy the nececcary option packages, please be patient..");
 
-          //  lastBuildPath = new DirectoryInfo(lastBuildDirectoryName);
-            LastBuildNumber = RemoteDropDownRootPath.Substring(RemoteDropDownRootPath.LastIndexOf("\\") + 1);
+            Form1.Instance.UpdateStatus("Get the path of the lastbuild directory");
+           //Get the path of the lastbuild directory
+            lastBuildPath = ReadOutLastBuildPath(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+
+            Form1.Instance.UpdateStatus("Get the compatible sunriseworkbench path and decompress it to the local folder");
             //Get the compatible sunriseworkbench path and decompress it to the local folder
-            ReadOutSWBPathFromJSON(new DirectoryInfo(RemoteDropDownRootPath));
+            ReadOutSWBPathFromJSON(LastBuildPath);
+                        
             //Copying option packages
-            CopyOptionPackagesFromRemoteDropDownFolder(LastBuildNumber, RemoteDropDownRootPath);
+            CopyOptionPackagesFromRemoteDropDownFolder(LastBuildPath.FullName);
         }
 
-        //private DirectoryInfo GetLastBuildDirectory(string buildNumber, string lastBuildPathDir)
-        //{
-        //    foreach (string actDirectory in Directory.GetDirectories(lastBuildPathDir.Substring(0, lastBuildPathDir.LastIndexOf("\\"))))
-        //    {
-        //        if (actDirectory.Contains(buildNumber))
-        //        {
-        //            lastBuildDir = new DirectoryInfo(actDirectory);
-        //            break;
-        //        }
-        //    }
+        private DirectoryInfo ReadOutLastBuildPath(string fileNameFullPath)
+        {
+            string res = string.Empty;
+            using (StreamReader fStream = new StreamReader(fileNameFullPath))
+            {
+              res= fStream.ReadLine();
+                fStream.Close();
+            }
+            lastBuildNumber =  res;
 
-        //    if (lastBuildDir == null)
-        //    {
-        //        MessageBox.Show("Last Build Directory not found!");
-        //        Application.Exit();
-        //    }
+            lastBuildPath = new DirectoryInfo( Path.Combine(RemoteDropDownRootPath, LastBuildNumber));
 
-        //    return lastBuildDir;
-        //}
+            return LastBuildPath;
+        }
+
+        
 
         private void CopyProcessOfArtifactsAndProducts(DirectoryInfo localPath, DirectoryInfo lastBuildDirectory)
         {
@@ -505,11 +507,12 @@ namespace SWB_OptionPackageInstaller
                     if (swbZipFile.Contains("SunriseWorkbench"))
                     {
                         swbBuildPath = new FileInfo(swbZipFile);
+                        break;
                     }
                 }
                 List<string>  sWBZipFile = new List<string>() ;
                 sWBZipFile.Add(Properties.Settings.Default.SWBZipFileName);
-                ArtifactHandler.Instance.CopyEveryFilesFromDirectoryToDestinationDir(sWBZipFile, SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName)));
+                ArtifactHandler.Instance.CopyEveryFilesFromDirectoryToDestinationDir(Properties.Settings.Default.SWBZipFileName, SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName)));
                 ///    UpdateStatus("Preparing to copy the SWB zip file....", "lbInfoText");
                 CustomFileCopier customFileCopier = new CustomFileCopier(SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName, Properties.Settings.Default.SWBZipFileName)));
                 customFileCopier.OnProgressChanged += CustomFileCopier_OnProgressChanged;
@@ -526,12 +529,12 @@ namespace SWB_OptionPackageInstaller
             Form1.Instance.UpdateTextBox(String.Format("Copying SWB zip file: {0:0}%", Persentage));
         }
 
-        private void CopyOptionPackagesFromRemoteDropDownFolder(string buildNumber, string lastBuildPath)
+        private void CopyOptionPackagesFromRemoteDropDownFolder(string buildNumber)
         {
             //  DirectoryInfo lastBuildDirectory = null;
 
             //Is this needed?
-            //lastBuildDirectory = CommandControler.Instance.LookUpForLastBuildDirectory(buildNumber, lastBuildPath);
+            //lastBuildPath = CommandControler.Instance.LookUpForLastBuildDirectory(buildNumber, RemoteDropDownRootPath);
 
             Thread copyThread = new Thread(new ThreadStart(() => CopyProcessOfArtifactsAndProducts(DestinationDir, LastBuildPath)));
             ThreadManager.Instance.StartAndWaitOneThread(copyThread);
@@ -740,7 +743,7 @@ namespace SWB_OptionPackageInstaller
         public async void CopyEveryFilesFromDirectoryToDestinationDir(string fileNeededToCopy, string sourceDir, string destDir)
         {
            
-                using (FileStream srcStream = File.Open(Path.Combine(sourceDir, fileNeededToCopy), FileMode.Open))
+                using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\")+1), fileNeededToCopy), FileMode.Open))
                 {
                     using (FileStream destStream = File.Create(destDir + fileNeededToCopy.Substring(fileNeededToCopy.LastIndexOf('\\'))))
                     {
