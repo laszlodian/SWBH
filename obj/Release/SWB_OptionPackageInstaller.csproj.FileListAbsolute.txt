@@ -144,3 +144,14 @@ d:\SWBOptionPackageInstaller\obj\Release\SWB_OptionPackageInstaller.application
 d:\SWBOptionPackageInstaller\obj\Release\SWB_OptionPackageInstaller.csproj.CopyComplete
 d:\SWBOptionPackageInstaller\obj\Release\SWB_OptionPackageInstaller.exe
 d:\SWBOptionPackageInstaller\obj\Release\SWB_OptionPackageInstaller.pdb
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.csprojAssemblyReference.cache
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.exe.config
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.ChooseDirectoryForm.resources
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.Form1.resources
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.OptionsForm.resources
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.ProgressForm.resources
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.Properties.Resources.resources
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.csproj.GenerateResource.cache
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.csproj.CoreCompileInputs.cache
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.exe
+G:\swbman\obj\Release\SWB_OptionPackageInstaller.pdb

@@ -32,8 +32,8 @@ namespace SWB_OptionPackageInstaller
             this.TopMost = true;
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 3, Screen.PrimaryScreen.WorkingArea.Height / 3);
 
-            tbDefaultPathForPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
-            tbDefaultPathForSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+            //tbDefaultPathForPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
+            //tbDefaultPathForSWB.Text = Properties.Settings.Default.DefaultSWBPath;
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -45,18 +45,24 @@ namespace SWB_OptionPackageInstaller
         {
             StoreThatThereSavedValues();
 
-            Properties.Settings.Default.DefaultOptionPackagePath = tbDefaultPathForPackages.Text;
-            Properties.Settings.Default.DefaultSWBPath = tbDefaultPathForSWB.Text;
+            //Properties.Settings.Default.DefaultOptionPackagePath = tbDefaultPathForPackages.Text;
+            //Properties.Settings.Default.DefaultSWBPath = tbDefaultPathForSWB.Text;
             Properties.Settings.Default.InstallAllFoundPackages = cbInstallAllFoundOPs.Checked;
             Properties.Settings.Default.Save();
 
             this.Close();
         }
 
+        //    private void CopyToAsync(private new ParallelEnumerable().).
+
         private void StoreThatThereSavedValues()
         {
             Properties.Settings.Default.HasSavedValues = true;
             Properties.Settings.Default.Save();
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
         }
     }
 }

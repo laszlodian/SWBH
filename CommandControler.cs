@@ -562,7 +562,7 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
-        public void CollectAndShowAvailableBuildDirectories(DirectoryInfo lastBuildDirectory)
+        public List<string> CollectAndShowAvailableBuildDirectories(DirectoryInfo lastBuildDirectory)
         {
             string masterDirectory = lastBuildDirectory.FullName.Substring(0, lastBuildDirectory.FullName.LastIndexOf('\\') + 1);
 
@@ -570,15 +570,10 @@ namespace SWB_OptionPackageInstaller
             {
                 if (buildDirectoryRegex.IsMatch(buildDir.Substring(buildDir.LastIndexOf("\\") + 1)))
                 {
-                    allBuildDirectoryUnderMasterFolder.Add(buildDir);
+                    allBuildDirectoryUnderMasterFolder.Add(buildDir.Substring(buildDir.LastIndexOf("\\") + 1));
                 }
             }
-
-            DialogResult res = new ChooseDirectoryForm().ShowDialog();
-            if (res == DialogResult.Yes)
-            {
-                //PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
-            }
+            return allBuildDirectoryUnderMasterFolder;
         }
 
         public void FillDatagridView()

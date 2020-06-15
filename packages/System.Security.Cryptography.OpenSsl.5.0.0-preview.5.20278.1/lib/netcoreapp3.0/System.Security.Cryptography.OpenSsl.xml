@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Security.Cryptography.OpenSsl</name>
+    </assembly>
+    <members>
+        <member name="P:System.SR.Arg_CryptographyException">
+            <summary>Error occurred during a cryptographic operation.</summary>
+        </member>
+        <member name="P:System.SR.Argument_EncodeDestinationTooSmall">
+            <summary>The destination is too small to hold the encoded value.</summary>
+        </member>
+        <member name="P:System.SR.Argument_InvalidOidValue">
+            <summary>The OID value was invalid.</summary>
+        </member>
+        <member name="P:System.SR.Argument_InvalidValue">
+            <summary>Value was invalid.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_ArgECDHKeySizeMismatch">
+            <summary>The keys from both parties must be the same size to generate a secret agreement.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_CSP_NoPrivateKey">
+            <summary>Object contains only the public half of a key pair. A private key must also be provided.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Encryption_MessageTooLong">
+            <summary>The message exceeds the maximum allowable length for the chosen options ({0}).</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_HashAlgorithmNameNullOrEmpty">
+            <summary>The hash algorithm name cannot be null or empty.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_CurveNotSupported">
+            <summary>The specified curve '{0}' or its parameters are not valid for this platform.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Der_Invalid_Encoding">
+            <summary>ASN1 corrupted data.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_MissingFields">
+            <summary>The specified DSA parameters are not valid; P, Q, G and Y are all required.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_MismatchedPGY">
+            <summary>The specified DSA parameters are not valid; P, G and Y must be the same length (the key size).</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_MismatchedQX">
+            <summary>The specified DSA parameters are not valid; Q and X (if present) must be the same length.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_MismatchedPJ">
+            <summary>The specified DSA parameters are not valid; J (if present) must be shorter than P.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_SeedRestriction_ShortKey">
+            <summary>The specified DSA parameters are not valid; Seed, if present, must be 20 bytes long for keys shorter than 1024 bits.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_QRestriction_ShortKey">
+            <summary>The specified DSA parameters are not valid; Q must be 20 bytes long for keys shorter than 1024 bits.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidDsaParameters_QRestriction_LargeKey">
+            <summary>The specified DSA parameters are not valid; Q's length must be one of 20, 32 or 64 bytes.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidKeySize">
+            <summary>Specified key is not a valid size for this algorithm.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_InvalidPaddingMode">
+            <summary>Specified padding mode is not valid for this algorithm.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_OpenInvalidHandle">
+            <summary>Cannot open an invalid handle.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_TlsRequires64ByteSeed">
+            <summary>The TLS key derivation function requires a seed value of exactly 64 bytes.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_UnknownHashAlgorithm">
+            <summary>'{0}' is not a known hash algorithm.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Invalid_IA5String">
+            <summary>The string contains a character not in the 7 bit ASCII character set.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_KeyTooSmall">
+            <summary>The key is too small for the requested operation.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_OAEP_Decryption_Failed">
+            <summary>Error occurred while decoding OAEP padding.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_RSA_DecryptWrongSize">
+            <summary>The length of the data to decrypt is not valid for the size of this key.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_SignHash_WrongSize">
+            <summary>The provided hash value is not the expected size for the specified hash algorithm.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_WriteEncodedValue_OneValueAtATime">
+            <summary>The input to WriteEncodedValue must represent a single encoded value with no trailing data.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Asn_EnumeratedValueRequiresNonFlagsEnum">
+            <summary>ASN.1 Enumerated values only apply to enum types without the [Flags] attribute.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Asn_NamedBitListRequiresFlagsEnum">
+            <summary>Named bit list operations require an enum with the [Flags] attribute.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Asn_NamedBitListValueTooBig">
+            <summary>The encoded named bit list value is larger than the value size of the '{0}' enum.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Asn_UniversalValueIsFixed">
+            <summary>Tags with TagClass Universal must have the appropriate TagValue value for the data type being read or written.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_Asn_UnusedBitCountRange">
+            <summary>Unused bit count must be between 0 and 7, inclusive.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_AsnWriter_EncodeUnbalancedStack">
+            <summary>Encode cannot be called while a Sequence or SetOf is still open.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_AsnWriter_PopWrongTag">
+            <summary>Cannot pop the requested tag as it is not currently in progress.</summary>
+        </member>
+        <member name="P:System.SR.Cryptography_NotValidPublicOrPrivateKey">
+            <summary>Key is not a valid public or private key.</summary>
+        </member>
+        <member name="P:System.SR.PlatformNotSupported_CryptographyOpenSSL">
+            <summary>OpenSSL is not supported on this platform.</summary>
+        </member>
+    </members>
+</doc>

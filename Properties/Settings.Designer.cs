@@ -25,20 +25,8 @@ namespace SWB_OptionPackageInstaller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("content.zip")]
-        public string ContentZipFileName {
-            get {
-                return ((string)(this["ContentZipFileName"]));
-            }
-            set {
-                this["ContentZipFileName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server = 172.22.246.177; Port= 5432; Database = swb_installs; User ID = swb_insta" +
-            "lls_admin; Password = admin")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server = 192.0.0.1; Port= 5432; Database = swb_installs; User ID = swb_installs_a" +
+            "dmin; Password = admin")]
         public string DBConnectionString {
             get {
                 return ((string)(this["DBConnectionString"]));
@@ -102,18 +90,6 @@ namespace SWB_OptionPackageInstaller.Properties {
             }
             set {
                 this["ProductsNeededToCopy"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool FillTextBoxes {
-            get {
-                return ((bool)(this["FillTextBoxes"]));
-            }
-            set {
-                this["FillTextBoxes"] = value;
             }
         }
         
@@ -203,37 +179,13 @@ namespace SWB_OptionPackageInstaller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool StoreToDB {
             get {
                 return ((bool)(this["StoreToDB"]));
             }
             set {
                 this["StoreToDB"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
-        public string DefaultOptionPackagePath {
-            get {
-                return ((string)(this["DefaultOptionPackagePath"]));
-            }
-            set {
-                this["DefaultOptionPackagePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
-        public string DefaultSWBPath {
-            get {
-                return ((string)(this["DefaultSWBPath"]));
-            }
-            set {
-                this["DefaultSWBPath"] = value;
             }
         }
         
@@ -258,6 +210,18 @@ namespace SWB_OptionPackageInstaller.Properties {
             }
             set {
                 this["HasSavedValues"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAppInQuickMode {
+            get {
+                return ((bool)(this["IsAppInQuickMode"]));
+            }
+            set {
+                this["IsAppInQuickMode"] = value;
             }
         }
     }

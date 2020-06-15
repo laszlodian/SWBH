@@ -2,19 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Runtime.CompilerServices.ConfiguredTaskAwaitable;
 
 namespace SWB_OptionPackageInstaller
 {
@@ -48,8 +41,8 @@ namespace SWB_OptionPackageInstaller
 
         internal void SetDefaultValues()
         {
-            tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
-            tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+            //tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
+            //tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
         }
 
         private string pathOfSWB;
@@ -78,8 +71,8 @@ namespace SWB_OptionPackageInstaller
 
         public void InsertSavedValues()
         {
-            tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
-            tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
+            //tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+            //tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
         }
 
         private DirectoryInfo lastBuildPath;
@@ -331,6 +324,10 @@ namespace SWB_OptionPackageInstaller
         public Form1()
         {
             Instance = this;
+
+            if (Properties.Settings.Default.IsAppInQuickMode)
+            {
+            }
             InitializeComponent();
 
             cbPathOfLocalFolder_CheckedChanged(null, EventArgs.Empty);
@@ -340,8 +337,8 @@ namespace SWB_OptionPackageInstaller
 
             if (Properties.Settings.Default.HasSavedValues)
             {
-                tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
-                tbPathOfPackages.Text = Properties.Settings.Default.DefaultSWBPath;
+                //tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+                //tbPathOfPackages.Text = Properties.Settings.Default.DefaultSWBPath;
             }
             else
             {
@@ -469,8 +466,8 @@ namespace SWB_OptionPackageInstaller
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel2.Dock = DockStyle.Fill;
             this.WindowState = FormWindowState.Maximized;
-            tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
-            tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
+            //    tbPathOfPackages.Text = Properties.Settings.Default.DefaultOptionPackagePath;
+            //    tbPathOfSWB.Text = Properties.Settings.Default.DefaultSWBPath;
         }
 
         private void SWBForm1_Layout(object sender, LayoutEventArgs e)
@@ -727,6 +724,32 @@ namespace SWB_OptionPackageInstaller
                 tbPathOfLocalFolder.BackColor = Color.Gainsboro;
                 tbPathOfLocalFolder.ForeColor = Color.Gray;
             }
+        }
+
+        private void cbSpecifiedBuild_CheckedChanged(object sender, EventArgs e)
+        {
+            List<string> availableBuilds = new List<string>();
+
+            ArtifactHandler.Instance.ReadOutLastBuildNumber(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
+
+            availableBuilds = CommandControler.Instance.CollectAndShowAvailableBuildDirectories(new DirectoryInfo(ArtifactHandler.Instance.RemoteDropDownRootPath));
+
+            cbAllBuildsOnServer.Items.AddRange(availableBuilds.ToArray<object>());
+            cbAllBuildsOnServer.Enabled = true;
+            cbAllBuildsOnServer.Text = Convert.ToString(cbAllBuildsOnServer.Items[0]);
+
+            cbAllBuildsOnServer.Refresh();
+
+            tbOptionPackagesServer.Enabled = false;
+        }
+
+        private void cbAllBuildsOnServer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ArtifactHandler.Instance.RemoteDropDownRootPath.Substring(ArtifactHandler.Instance.RemoteDropDownRootPath.LastIndexOf("\\") + 1).Contains("build"))
+            {
+                ArtifactHandler.Instance.RemoteDropDownRootPath = ArtifactHandler.Instance.RemoteDropDownRootPath.Substring(0, ArtifactHandler.Instance.RemoteDropDownRootPath.LastIndexOf("\\") + 1);
+            }
+            ArtifactHandler.Instance.RemoteDropDownRootPath = Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, cbAllBuildsOnServer.Text);
         }
     }
 }

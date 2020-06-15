@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SWB_OptionPackageInstaller.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ContentZipFileName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">content.zip</Value>
-    </Setting>
     <Setting Name="DBConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server = 172.22.246.177; Port= 5432; Database = swb_installs; User ID = swb_installs_admin; Password = admin</Value>
+      <Value Profile="(Default)">Server = 192.0.0.1; Port= 5432; Database = swb_installs; User ID = swb_installs_admin; Password = admin</Value>
     </Setting>
     <Setting Name="UseLocalProperties" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -38,9 +35,6 @@
   &lt;string&gt;0000356423;00;KUKA.NavSolution 1.16 KMP1500-S.zip&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="FillTextBoxes" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="DefaultRemoteDropDownFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\</Value>
     </Setting>
@@ -63,19 +57,16 @@
       <Value Profile="(Default)">AppSetting</Value>
     </Setting>
     <Setting Name="StoreToDB" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="DefaultOptionPackagePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\</Value>
-    </Setting>
-    <Setting Name="DefaultSWBPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="InstallAllFoundPackages" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="HasSavedValues" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IsAppInQuickMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
