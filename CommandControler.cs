@@ -182,7 +182,6 @@ namespace SWB_OptionPackageInstaller
         public CommandControler()
         {
             Instance = this;
-            TraceHelper.MarkTraceFileForStore("COMMANDCONTROLLER");
             Trace.TraceInformation("Trace marked for store with name: {0}", "COMMANDCONTROLLER");
 
             remoteDropDownPath = @"\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\";

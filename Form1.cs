@@ -164,6 +164,7 @@ namespace SWB_OptionPackageInstaller
         {
             if (active)
             {
+                ArtifactHandler.Instance.LocalPath = new DirectoryInfo(tbPathOfLocalFolder.Text);
                 if (tbPathOfLocalFolder.InvokeRequired)
                 {
                     tbPathOfLocalFolder.Invoke(new SetLocalPathTextBoxDelegate(SetLocalPathTextBox), active);
@@ -177,6 +178,8 @@ namespace SWB_OptionPackageInstaller
             }
             else
             {
+                ArtifactHandler.Instance.LocalPath = new DirectoryInfo(tbPathOfSWB.Text);
+
                 if (tbPathOfLocalFolder.InvokeRequired)
                 {
                     tbPathOfLocalFolder.Invoke(new SetLocalPathTextBoxDelegate(SetLocalPathTextBox), active);
@@ -360,7 +363,7 @@ namespace SWB_OptionPackageInstaller
                 tbPathOfPackages.Text = Properties.Settings.Default.LastUsedOptionPackagePath;
             }
 
-            TraceHelper.SetupListener();
+            //    TraceHelper.SetupListener();
             UpdateStatus("Loading Form1....");
 
             dgvInstalledOPs.Dock = DockStyle.Fill;
@@ -379,6 +382,7 @@ namespace SWB_OptionPackageInstaller
         private void Form1_Shown(object sender, EventArgs e)
         {
             UpdateStatus("Initializing functions, and features...");
+            Form1.Instance.SetLocalPathTextBox(((Form1.Instance.theTabControl.TabPages[2].Controls["tableLayoutPanel2"] as TableLayoutPanel).Controls["cbPathOfLocalFolder"] as CheckBox).Checked);
         }
 
         public Control GetReferencedControl(string controlName)
@@ -478,7 +482,7 @@ namespace SWB_OptionPackageInstaller
 
         private void SWBForm1_Load(object sender, EventArgs e)
         {
-            Text = string.Format("{0}       {1}", this.Text, SwVersion.Instance.ActualSWVersion);
+            Text = string.Format("{0}       {1}", "SunriseWorkbench option package manager", SwVersion.Instance.ActualSWVersion);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel2.Dock = DockStyle.Fill;
             this.WindowState = FormWindowState.Maximized;

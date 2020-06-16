@@ -280,17 +280,95 @@ namespace SWB_OptionPackageInstaller
             createTestLibraryHierarchy.RunSynchronously();
 
             //Read out the build number from the txt file on the server
-            lastBuildFilePath = new DirectoryInfo(Path.Combine(Properties.Settings.Default.DefaultRemoteDropDownFolder, Properties.Settings.Default.LastBuildNumberTextFile));
-            //      ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
+            lastBuildFilePath = new DirectoryInfo(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+            lastBuildNumber = ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+
+            ReadOutSWBPathFromJSON(LastBuildPath);
             //Copy the artifacts and products from the newest build
-            PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath);
+            CancellationToken cancellationToken = new CancellationToken(true);
+            //   CopyEveryFilesFromDirectoryToDestinationDir(productsList, Path.Combine(LastBuildPath.FullName, "Product"), LocalPath.FullName, cancellationToken).Wait();
+            //    CopyEveryFilesFromDirectoryToDestinationDir(artifactList, Path.Combine(LastBuildPath.FullName, "Artifacts"), LocalPath.FullName, cancellationToken).Wait();
+            foreach (string item in artifactList)
+            {
+                CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
+                artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
+                artifactsCopier.OnComplete += ArtifactsCopier_OnComplete;
+                Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
+                artifactCopyThread.Start();
+                //artifactCopyThread.Join();
+            }
+            foreach (string item in productsList)
+            {
+                CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
+                productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
+                productCopier.OnComplete += ProductCopier_OnComplete;
+                Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
+                productCopyThread.Start();
+                //      productCopyThread.Join();
+            }
+            //  PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath);
         }
 
-        public static async Task AwaitSWBZipFileCopy()
+        public int prodPercentageOverall = 0;
+
+        private void ProductCopier_OnProgressChanged(double Persentage, ref bool Cancel)
         {
-            AwaitableSWBZipFileCopier awaitableSWBZipFileCopier = new AwaitableSWBZipFileCopier();
-            await awaitableSWBZipFileCopier.GetAwaiter();
+            Form1.Instance.UpdateStatus(string.Format("Current file copy process percentage: {0}%", Persentage));
+            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0}%", prodPercentageOverall + 3));
         }
+
+        private void ProductCopier_OnComplete()
+        {
+            Form1.Instance.UpdateStatus("All required option package has been copied to local folder from the Product folder.");
+            Form1.Instance.UpdateTextBox("Products successfully copied.");
+        }
+
+        private void ArtifactsCopier_OnComplete()
+        {
+            Form1.Instance.UpdateStatus("All required option package has been copied to local folder from the Artifacts");
+            Form1.Instance.UpdateTextBox("Artifacts successfully copied");
+        }
+
+        public int artifactPercentageOverall = 0;
+
+        private void ArtifactsCopier_OnProgressChanged(double Persentage, ref bool Cancel)
+        {
+            Form1.Instance.UpdateStatus(string.Format("Current file copy process percentage: {0}%", Persentage));
+            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0}%", artifactPercentageOverall + 3));
+        }
+
+        public static void FileCopy(string source, string destination)
+        {
+            int array_length = (int)Math.Pow(2, 19);
+            byte[] dataArray = new byte[array_length];
+            using (FileStream fsread = new FileStream
+            (source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, array_length, true))
+            {
+                using (BinaryReader bwread = new BinaryReader(fsread))
+                {
+                    using (FileStream fswrite = new FileStream
+                    (destination, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, array_length, FileOptions.Asynchronous))
+                    {
+                        using (BinaryWriter bwwrite = new BinaryWriter(fswrite))
+                        {
+                            for (; ; )
+                            {
+                                int read = bwread.Read(dataArray, 0, array_length);
+                                if (0 == read)
+                                    break;
+                                bwwrite.Write(dataArray, 0, read);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //public static async Task AwaitSWBZipFileCopy()
+        //{
+        //    AwaitableSWBZipFileCopier awaitableSWBZipFileCopier = new AwaitableSWBZipFileCopier();
+        //    await awaitableSWBZipFileCopier.GetAwaiter();
+        //}
 
         private void PreparingToCopyOPsFromRemotePath(string navServerPath)
         {
@@ -637,10 +715,10 @@ namespace SWB_OptionPackageInstaller
                             swbPath = readedLine.Split(':')[1].Trim(new char[] { '"', ',' });
                             swbPath = swbPath.Substring(swbPath.IndexOf("//"));
                             Form1.Instance.UpdateStatus(string.Format("SWB zip file path: {0}", swbPath));
-                            //Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
-                            //await copyProductTask.ConfigureAwait(true);
-                            //copyProductTask.RunSynchronously();
-                            //   copyProductThread.Start();
+                            Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
+                            await copyProductTask.ConfigureAwait(true);
+                            copyProductTask.RunSynchronously();
+                            copyProductTask.Wait();
                             //    ThreadManager.Instance.StartAndWaitOneThread(copyProductThread);
                             sr.Close();
                             //  return swbPath;
@@ -786,18 +864,37 @@ namespace SWB_OptionPackageInstaller
         public static async Task CopyEveryFilesFromDirectoryToDestinationDir(List<string> filesNeededToCopy, string sourceDir, string destDir, CancellationToken cancellationToken_in)
         {
             double currentPercentage = 0.0;
-            double oneFilePercentageValue = new DirectoryInfo(sourceDir).GetFiles().Length / 100;
+            double oneFilePercentageValue = filesNeededToCopy.Count / 100;
             foreach (string fileNeedToCopy in filesNeededToCopy)
             {
-                using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\") + 1), fileNeedToCopy), FileMode.Open))
+                Trace.TraceInformation("File is started to copy: {0}", fileNeedToCopy);
+                using (FileStream srcStream = File.Open(Path.Combine(sourceDir, fileNeedToCopy), FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    using (FileStream destStream = File.Create(destDir + fileNeedToCopy.Substring(fileNeedToCopy.LastIndexOf('\\'))))
+                    using (FileStream destStream = File.Create(Path.Combine(destDir, fileNeedToCopy), 8096, FileOptions.Asynchronous))
                     {
                         await srcStream.CopyToAsync(destStream);
                         Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeedToCopy));
                         currentPercentage += oneFilePercentageValue;
                         Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
                     }
+                }
+            }
+            await Task.Delay(300000, cancellationToken_in);
+        }
+
+        public static async Task CopyEveryFilesFromDirectoryToDestinationDir(string fileNeededToCopy, string sourceDir, string destDir, CancellationToken cancellationToken_in)
+        {
+            double currentPercentage = 0.0;
+            double oneFilePercentageValue = new DirectoryInfo(sourceDir).GetFiles().Length / 100;
+
+            using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\") + 1), fileNeededToCopy), FileMode.Open))
+            {
+                using (FileStream destStream = File.Create(destDir + fileNeededToCopy.Substring(fileNeededToCopy.LastIndexOf('\\'))))
+                {
+                    await srcStream.CopyToAsync(destStream);
+                    Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeededToCopy));
+                    currentPercentage += oneFilePercentageValue;
+                    Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
                 }
             }
         }
