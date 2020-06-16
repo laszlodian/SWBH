@@ -250,21 +250,64 @@ namespace SWB_OptionPackageInstaller
                unzipSWBThread.Start();
            }*/
 
-        public void UnzipSunriseWorkbench()
+        public void UnzipSunriseWorkbench(FileInfo zipFile, DirectoryInfo destPath)
         {
-            if (Directory.Exists(Form1.Instance.PathOfSWB))
-            {
-                foreach (string item in Directory.GetFiles(Form1.Instance.PathOfSWB))
-                {
-                    File.Delete(item);
-                }
-            }
-            else
-                Directory.CreateDirectory(Form1.Instance.PathOfSWB);
+            //if (Directory.Exists(Form1.Instance.PathOfSWB))
+            //{
+            //    foreach (string item in Directory.GetFiles(Form1.Instance.PathOfSWB))
+            //    {
+            //        File.Delete(item);
+            //    }
+            //}
+            //else
+            //    Directory.CreateDirectory(Form1.Instance.PathOfSWB);
 
             new Thread(new ThreadStart(() => SetupTimer())).Start();
 
-            ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.PathOfSWB);
+            ArtifactHandler.Instance.DecompressZipFile(zipFile, destPath);
+
+            using (StreamReader sr = new StreamReader(Path.Combine(Form1.Instance.PathOfSWB, ".eclipseproduct")))
+            {
+                string line = sr.ReadLine();
+                while (line != string.Empty || line != null)
+                {
+                    if (line.Contains("version"))
+                    {
+                        SunriseWorkbenchVersion = line.Split('=')[1].Trim();
+                        if (string.IsNullOrEmpty(SunriseWorkbenchVersion))
+                        {
+                            MessageBox.Show("Couldn't find SWB version!");
+                        }
+                        Trace.TraceInformation("SWB version: {0}", SunriseWorkbenchVersion);
+                        break;
+                    }
+                    line = sr.ReadLine();
+                }
+            }
+        }
+
+        public void UnzipSunriseWorkbench()
+        {
+            //if (Directory.Exists(Form1.Instance.PathOfSWB))
+            //{
+            //    foreach (string item in Directory.GetFiles(Form1.Instance.PathOfSWB))
+            //    {
+            //        File.Delete(item);
+            //    }
+            //}
+            //else
+            //    Directory.CreateDirectory(Form1.Instance.PathOfSWB);
+
+            new Thread(new ThreadStart(() => SetupTimer())).Start();
+
+            if (Form1.Instance.theTabControl.SelectedIndex == 0)
+            {
+                ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.PathOfSWB);
+            }
+            else
+            {
+                ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.tbPathOfLocalFolder.Text);
+            }
 
             using (StreamReader sr = new StreamReader(Path.Combine(Form1.Instance.PathOfSWB, ".eclipseproduct")))
             {
@@ -561,6 +604,30 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
+        public void CheckPackagesInFolder(string pathOfOptionPackages, out BindingSource bindingSource_in)
+        {
+            bindingSource_in = new BindingSource();
+
+            foreach (FileInfo opFile in new DirectoryInfo(Path.Combine(pathOfOptionPackages, "Product")).GetFiles("*.zip", SearchOption.TopDirectoryOnly))
+            {
+                if (opFile.Name.Contains("KUKA.NavSolution"))
+                {
+                    opsInFolder.Add(opFile);
+                    opCountInFolder++;
+                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCountInFolder, true));
+                }
+            }
+            foreach (FileInfo opFile in new DirectoryInfo(Path.Combine(pathOfOptionPackages, "Artifacts")).GetFiles("*.zip", SearchOption.TopDirectoryOnly))
+            {
+                if (opFile.Name.Contains(".swb."))
+                {
+                    opsInFolder.Add(opFile);
+                    opCountInFolder++;
+                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCountInFolder, true));
+                }
+            }
+        }
+
         public List<string> CollectAndShowAvailableBuildDirectories(DirectoryInfo lastBuildDirectory)
         {
             string masterDirectory = lastBuildDirectory.FullName.Substring(0, lastBuildDirectory.FullName.LastIndexOf('\\') + 1);
@@ -578,7 +645,7 @@ namespace SWB_OptionPackageInstaller
         public void FillDatagridView()
         {
             UpdateStatus("Building DataGrid for reprezenting features...", "lbInfoText");
-            Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs(), 3);
+            Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs());
 
             Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
         }

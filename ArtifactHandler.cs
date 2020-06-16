@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.IO.Pipes;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -153,7 +155,6 @@ namespace SWB_OptionPackageInstaller
 
         private DirectoryInfo lastBuildPath;
 
-
         public string ActProduct { get { return actProduct; } set { actProduct = value; } }
 
         private bool collectionFinished;
@@ -163,15 +164,23 @@ namespace SWB_OptionPackageInstaller
 
         private StringCollection _products;
         public string[] productsArray = new string[4];
-    
-        public string LastBuildNumber{get{ return lastBuildNumber; }set{ lastBuildNumber = value; } }
+
+        public string LastBuildNumber { get { return lastBuildNumber; } set { lastBuildNumber = value; } }
         private string lastBuildNumber;
-    
+
         private DirectoryInfo lastBuildFilePath;
-        public DirectoryInfo LastBuildFilePath { get { return lastBuildFilePath; } set{lastBuildFilePath=value; } }
+
+        private DirectoryInfo localPath;
+
+        public DirectoryInfo LocalPath
+        {
+            get { return localPath; }
+            set { localPath = value; }
+        }
+
+        public DirectoryInfo LastBuildFilePath { get { return lastBuildFilePath; } set { lastBuildFilePath = value; } }
 
         public DirectoryInfo LastBuildPath { get { return lastBuildPath; } set { lastBuildPath = value; } }
-
 
         #endregion Properties
 
@@ -224,8 +233,8 @@ namespace SWB_OptionPackageInstaller
             else
                 destinationDir = new DirectoryInfo(string.Format(@"c:\_SWB\{0}_{1}_{2}\", DateTime.Today.Date.Year, DateTime.Today.Date.Month, DateTime.Today.Date.Day));
 
-            logDir = Directory.CreateDirectory(Path.Combine(destinationDir.FullName, "logs"));
-            swbDir = Directory.CreateDirectory(Path.Combine(destinationDir.FullName, "SWB"));
+            logDir = Directory.CreateDirectory(Path.Combine(DestinationDir.FullName, "logs"));
+            swbDir = Directory.CreateDirectory(Path.Combine(DestinationDir.FullName, "SWB"));
 
             if (logDir.Exists && swbDir.Exists)
             {
@@ -235,92 +244,124 @@ namespace SWB_OptionPackageInstaller
 
         public string ReadOutLastBuildNumber(string lastBuildFilePath)
         {
-            
-                string line = string.Empty;
+            string line = string.Empty;
 
-                    using (FileStream fileStream = new FileStream(lastBuildFilePath, FileMode.Open, FileAccess.Read))
-                    {
-                        using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
-                        {
-                            line = streamReader.ReadLine();
-                            streamReader.Close();
-                        }
+            using (FileStream fileStream = new FileStream(lastBuildFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    line = streamReader.ReadLine();
+                    streamReader.Close();
+                }
 
-                        fileStream.Close();
-                        lastBuildNumber = line;
-                    }
-                    if (string.IsNullOrEmpty(LastBuildNumber))
-                    {
-                        //MessageBox.Show("Last Build Number Not Found!", "Couldn't read out last build number", MessageBoxIcon.Error);
-                        MessageBox.Show("Application is now exit...", "Exit application - No Build number found");
-
-                        Application.Exit();
-                    }
-
-                    Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildNumber));
-                    Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildNumber));
-                
-                return LastBuildNumber;
-                //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
+                fileStream.Close();
+                lastBuildNumber = line;
             }
-        
+            if (string.IsNullOrEmpty(LastBuildNumber))
+            {
+                //MessageBox.Show("Last Build Number Not Found!", "Couldn't read out last build number", MessageBoxIcon.Error);
+                MessageBox.Show("Application is now exit...", "Exit application - No Build number found");
+
+                Application.Exit();
+            }
+
+            Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildNumber));
+            Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildNumber));
+
+            return LastBuildNumber;
+            //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
+        }
 
         public void PrepareThenCopyResources()
         {
             //Create the folder architecture on local computer
-            CreateSWBTestDirectoryHierarchy();
+            Task createTestLibraryHierarchy = new Task(CreateSWBTestDirectoryHierarchy);
+            createTestLibraryHierarchy.ConfigureAwait(false);
+            createTestLibraryHierarchy.RunSynchronously();
+
             //Read out the build number from the txt file on the server
-            lastBuildFilePath =new DirectoryInfo( Path.Combine(Properties.Settings.Default.DefaultRemoteDropDownFolder,Properties.Settings.Default.LastBuildNumberTextFile));
+            lastBuildFilePath = new DirectoryInfo(Path.Combine(Properties.Settings.Default.DefaultRemoteDropDownFolder, Properties.Settings.Default.LastBuildNumberTextFile));
             //      ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath.Trim(), Properties.Settings.Default.LastBuildNumberTextFile));
             //Copy the artifacts and products from the newest build
             PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath);
         }
 
+        public static async Task AwaitSWBZipFileCopy()
+        {
+            AwaitableSWBZipFileCopier awaitableSWBZipFileCopier = new AwaitableSWBZipFileCopier();
+            await awaitableSWBZipFileCopier.GetAwaiter();
+        }
+
         private void PreparingToCopyOPsFromRemotePath(string navServerPath)
         {
-
             Form1.Instance.UpdateStatus("Get the path of the lastbuild directory");
-           //Get the path of the lastbuild directory
-            lastBuildPath = ReadOutLastBuildPath(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+            //Get the path of the lastbuild directory
+            Task getLastBuildPathTask = new Task<DirectoryInfo>(() => ReadOutLastBuildPath(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile)));
+            getLastBuildPathTask.RunSynchronously(TaskScheduler.FromCurrentSynchronizationContext());
+
+            //lastBuildPath =getLastBuildPathTask.// ReadOutLastBuildPath(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
 
             Form1.Instance.UpdateStatus("Get the compatible sunriseworkbench path and decompress it to the local folder");
             //Get the compatible sunriseworkbench path and decompress it to the local folder
-            ReadOutSWBPathFromJSON(LastBuildPath);
-                        
+            Task readOut = new Task(() => ReadOutSWBPathFromJSON(LastBuildPath));
+            readOut.ConfigureAwait(true);
+            readOut.ContinueWith(x =>
+            {
+                Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
+                copyProductTask.ConfigureAwait(true);
+                copyProductTask.RunSynchronously();
+                x.RunSynchronously();
+            }).ContinueWith(y =>
+            {
+                Task decompressTask = new Task(() => CommandControler.Instance.UnzipSunriseWorkbench(new FileInfo(SWBZipFilePath), new DirectoryInfo(Form1.Instance.PathOfSWB)));
+                decompressTask.ConfigureAwait(true);
+                decompressTask.RunSynchronously();
+                y.RunSynchronously();
+            }).ContinueWith(c => { CopyOptionPackagesFromRemoteDropDownFolder(LastBuildPath.FullName); c.RunSynchronously(); });
+            //CopySWBZipFileToLocal();
+            //DecompressSWBZipFile();
+
             //Copying option packages
-            CopyOptionPackagesFromRemoteDropDownFolder(LastBuildPath.FullName);
         }
 
-        private DirectoryInfo ReadOutLastBuildPath(string fileNameFullPath)
+        private async void CopySWBZipFileToLocal()
+        {
+            Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
+            await copyProductTask.ConfigureAwait(true);
+            copyProductTask.RunSynchronously();
+        }
+
+        public DirectoryInfo ReadOutLastBuildPath(string fileNameFullPath)
         {
             string res = string.Empty;
             using (StreamReader fStream = new StreamReader(fileNameFullPath))
             {
-              res= fStream.ReadLine();
+                res = fStream.ReadLine();
                 fStream.Close();
             }
-            lastBuildNumber =  res;
+            lastBuildNumber = res;
 
-            lastBuildPath = new DirectoryInfo( Path.Combine(RemoteDropDownRootPath, LastBuildNumber));
+            lastBuildPath = new DirectoryInfo(Path.Combine(RemoteDropDownRootPath, LastBuildNumber));
 
             return LastBuildPath;
         }
 
-        
-
-        private void CopyProcessOfArtifactsAndProducts(DirectoryInfo localPath, DirectoryInfo lastBuildDirectory)
+        private async Task CopyProcessOfArtifactsAndProductsAsync(DirectoryInfo localPath, DirectoryInfo lastBuildDirectory)
         {
+            CancellationToken cancellationToken = new CancellationToken(false);
             //CopyArtifactsFromLatestBuild(lastBuildDirectory);
             string[] artifactsArray = new string[13]; ;
             Properties.Settings.Default.ArtifactsNeededToCopy.CopyTo(artifactsArray, 0);
             artifactList.AddRange(artifactsArray);
-            CopyEveryFilesFromDirectoryToDestinationDir(artifactList, Path.Combine(lastBuildDirectory.FullName, "Artifacts"), localPath.FullName);
+            await CopyEveryFilesFromDirectoryToDestinationDir(artifactList, Path.Combine(lastBuildDirectory.FullName, "Artifacts"), localPath.FullName, cancellationToken);
+            await Task.Delay(4800000);
 
+            cancellationToken = new CancellationToken(false);
             string[] productsArray = new string[4];
             Properties.Settings.Default.ProductsNeededToCopy.CopyTo(productsArray, 0);
             ProductsList.AddRange(productsArray);
-            CopyEveryFilesFromDirectoryToDestinationDir(ProductsList, Path.Combine(lastBuildDirectory.FullName, "Product"), localPath.FullName);
-
+            await CopyEveryFilesFromDirectoryToDestinationDir(ProductsList, Path.Combine(lastBuildDirectory.FullName, "Product"), localPath.FullName, cancellationToken);
+            await Task.Delay(4800000);
             //  CopyProductsFromLatestBuild(lastBuildDirectory);
 
             CheckEachOPsIsCopied();
@@ -510,23 +551,39 @@ namespace SWB_OptionPackageInstaller
                         break;
                     }
                 }
-                List<string>  sWBZipFile = new List<string>() ;
-                sWBZipFile.Add(Properties.Settings.Default.SWBZipFileName);
-                ArtifactHandler.Instance.CopyEveryFilesFromDirectoryToDestinationDir(Properties.Settings.Default.SWBZipFileName, SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName)));
-                ///    UpdateStatus("Preparing to copy the SWB zip file....", "lbInfoText");
+                Form1.Instance.UpdateStatus("Preparing to copy the SWB zip file....");
+                //await ArtifactHandler.Instance.CopyEveryFilesFromDirectoryToDestinationDir(Properties.Settings.Default.SWBZipFileName, SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName)));
+
                 CustomFileCopier customFileCopier = new CustomFileCopier(SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName, Properties.Settings.Default.SWBZipFileName)));
                 customFileCopier.OnProgressChanged += CustomFileCopier_OnProgressChanged;
+                customFileCopier.Copy();
+                //  ThreadManager.Instance.StartAndWaitOneThread(new Thread(new ThreadStart(() => customFileCopier.Copy())));
 
-                Thread customArtifactsCopyThread = new Thread(new ThreadStart(() => customFileCopier.Copy()));
-
-                ThreadManager.Instance.StartAndWaitOneThread(customArtifactsCopyThread);
+                CommandControler.Instance.UnzipSunriseWorkbench(new FileInfo(Path.Combine(destinationDir.FullName, Properties.Settings.Default.SWBZipFileName)), new DirectoryInfo(Form1.Instance.tbPathOfLocalFolder.Text));
             }
         }
 
         private void CustomFileCopier_OnProgressChanged(double Persentage, ref bool Cancel)
         {
-            Form1.Instance.UpdateStatus("Copy SWB zip file to local path");
+            Form1.Instance.UpdateStatus(string.Format("Copy {0} zip file to local path", Properties.Settings.Default.SWBZipFileName));
             Form1.Instance.UpdateTextBox(String.Format("Copying SWB zip file: {0:0}%", Persentage));
+        }
+
+        public void DecompressZipFile(FileInfo zipFile, DirectoryInfo destDir)
+        {
+            using (ZipArchive archive = ZipFile.OpenRead(zipFile.FullName))
+            {
+                Thread unzipThread = new Thread(new ThreadStart(() =>
+                  {
+                      foreach (ZipArchiveEntry entry in archive.Entries)
+                      {
+                          // Gets the full path to ensure that relative segments are removed.
+                          string destinationPath = Path.GetFullPath(Path.Combine(destDir.FullName, entry.FullName));
+                          entry.ExtractToFile(destinationPath);
+                      }
+                  }));
+                ThreadManager.Instance.StartAndWaitOneThread(unzipThread);
+            }
         }
 
         private void CopyOptionPackagesFromRemoteDropDownFolder(string buildNumber)
@@ -536,7 +593,7 @@ namespace SWB_OptionPackageInstaller
             //Is this needed?
             //lastBuildPath = CommandControler.Instance.LookUpForLastBuildDirectory(buildNumber, RemoteDropDownRootPath);
 
-            Thread copyThread = new Thread(new ThreadStart(() => CopyProcessOfArtifactsAndProducts(DestinationDir, LastBuildPath)));
+            Thread copyThread = new Thread(new ThreadStart(() => CopyProcessOfArtifactsAndProductsAsync(DestinationDir, LastBuildPath)));
             ThreadManager.Instance.StartAndWaitOneThread(copyThread);
         }
 
@@ -564,31 +621,31 @@ namespace SWB_OptionPackageInstaller
             return res;
         }
 
-        private void ReadOutSWBPathFromJSON(DirectoryInfo lastBuildDir)
+        private async void ReadOutSWBPathFromJSON(DirectoryInfo lastBuildDir)
         {
             string readedLine = string.Empty;
-            foreach (string item in Directory.GetFiles(lastBuildDir.FullName, "*.json"))
-            {
-                if (item.EndsWith("settings_core.json"))
-                {
-                    using (StreamReader sr = new StreamReader(item))
-                    {
-                        readedLine = sr.ReadLine();
-                        while (readedLine != string.Empty)
-                        {
-                            if (readedLine.Contains("CoreBranchRepo"))
-                            {
-                                swbPath = readedLine.Split(':')[1].Trim(new char[] { '"', ',' });
-                                swbPath = swbPath.Substring(swbPath.IndexOf("//"));
 
-                                Thread copyProductThread = new Thread(new ThreadStart(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product")))));
-                                //   copyProductThread.Start();
-                                ThreadManager.Instance.StartAndWaitOneThread(copyProductThread);
-                                sr.Close();
-                                break;
-                            }
-                            readedLine = sr.ReadLine();
+            foreach (string item in Directory.GetFiles(lastBuildDir.FullName, "settings_core.json"))
+            {
+                using (StreamReader sr = new StreamReader(item))
+                {
+                    readedLine = sr.ReadLine();
+                    while (readedLine != string.Empty)
+                    {
+                        if (readedLine.Contains("CoreBranchRepo"))
+                        {
+                            swbPath = readedLine.Split(':')[1].Trim(new char[] { '"', ',' });
+                            swbPath = swbPath.Substring(swbPath.IndexOf("//"));
+                            Form1.Instance.UpdateStatus(string.Format("SWB zip file path: {0}", swbPath));
+                            //Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
+                            //await copyProductTask.ConfigureAwait(true);
+                            //copyProductTask.RunSynchronously();
+                            //   copyProductThread.Start();
+                            //    ThreadManager.Instance.StartAndWaitOneThread(copyProductThread);
+                            sr.Close();
+                            //  return swbPath;
                         }
+                        readedLine = sr.ReadLine();
                     }
                 }
             }
@@ -726,32 +783,39 @@ namespace SWB_OptionPackageInstaller
         #endregion Deprecated-Obsolated!!
 
         ///THIS looks FINE!
-        public async void CopyEveryFilesFromDirectoryToDestinationDir(List<string> filesNeededToCopy, string sourceDir, string destDir)
+        public static async Task CopyEveryFilesFromDirectoryToDestinationDir(List<string> filesNeededToCopy, string sourceDir, string destDir, CancellationToken cancellationToken_in)
         {
-            foreach (string filename in filesNeededToCopy)
+            double currentPercentage = 0.0;
+            double oneFilePercentageValue = new DirectoryInfo(sourceDir).GetFiles().Length / 100;
+            foreach (string fileNeedToCopy in filesNeededToCopy)
             {
-                using (FileStream srcStream = File.Open(Path.Combine(sourceDir, filename), FileMode.Open))
+                using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\") + 1), fileNeedToCopy), FileMode.Open))
                 {
-                    using (FileStream destStream = File.Create(destDir + filename.Substring(filename.LastIndexOf('\\'))))
+                    using (FileStream destStream = File.Create(destDir + fileNeedToCopy.Substring(fileNeedToCopy.LastIndexOf('\\'))))
                     {
                         await srcStream.CopyToAsync(destStream);
-                        Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", filename));
+                        Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeedToCopy));
+                        currentPercentage += oneFilePercentageValue;
+                        Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
                     }
                 }
             }
         }
-        public async void CopyEveryFilesFromDirectoryToDestinationDir(string fileNeededToCopy, string sourceDir, string destDir)
+
+        public async Task CopyEveryFilesFromDirectoryToDestinationDir(string fileNeededToCopy, string sourceDir, string destDir)
         {
-           
-                using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\")+1), fileNeededToCopy), FileMode.Open))
+            double currentPercentage = 0.0;
+            double oneFilePercentageValue = new FileInfo(fileNeededToCopy).Length / 100;
+            using (FileStream srcStream = File.Open(Path.Combine(sourceDir.Substring(sourceDir.LastIndexOf("\\") + 1), fileNeededToCopy), FileMode.Open))
+            {
+                using (FileStream destStream = File.Create(destDir + fileNeededToCopy.Substring(fileNeededToCopy.LastIndexOf('\\'))))
                 {
-                    using (FileStream destStream = File.Create(destDir + fileNeededToCopy.Substring(fileNeededToCopy.LastIndexOf('\\'))))
-                    {
-                        await srcStream.CopyToAsync(destStream);
-                        Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeededToCopy));
-                    }
+                    await srcStream.CopyToAsync(destStream);
+                    Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeededToCopy));
+                    currentPercentage += oneFilePercentageValue;
+                    Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
                 }
-            
+            }
         }
 
         private static void ExpandDataGridWithRows(DataGridView dgv, FileInfo package)
