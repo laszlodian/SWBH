@@ -87,7 +87,7 @@ namespace SWB_OptionPackageInstaller
 
         public int OPCountInFolder { get { return opCountInFolder; } set { opCountInFolder = value; } }
 
-        private List<string> collectedOPs;
+        private List<string> collectedOPs = new List<string>();
 
         public List<string> CollectedOPs
         {
@@ -286,7 +286,7 @@ namespace SWB_OptionPackageInstaller
                 Application.Exit();
             }
 
-            Form1.Instance.UpdateTextBox(string.Format("Last build number: {0}", LastBuildNumber));
+            Form1.Instance.UpdateImportantStatus(string.Format("Last build number: {0}", LastBuildNumber));
             Form1.Instance.UpdateStatus(string.Format("Last build number: {0}", LastBuildNumber));
 
             return LastBuildNumber;
@@ -365,13 +365,30 @@ namespace SWB_OptionPackageInstaller
         {
             foreach (string item in productsList)
             {
-                CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(lastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
-                productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
-                ProductsCopyingOnChange += ProductHandler_ProductsCopyingEventHandler;
-                //   this.ProductsCopiedSuccessfull += ProductsCopiedSuccessfullEventHandler;
-                Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
-                productCopyThread.Start();
-                //      productCopyThread.Join();
+                if (Form1.Instance.installationForPackages.Count < 1)
+                {
+                    CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(lastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
+                    productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
+                    //  ProductsCopyingOnChange += ProductHandler_ProductsCopyingEventHandler;
+                    //   this.ProductsCopiedSuccessfull += ProductsCopiedSuccessfullEventHandler;
+                    Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
+                    productCopyThread.Start();
+                }
+                else
+                    if (!Form1.Instance.installationForPackages.Contains(item))
+                {
+                    continue;
+                }
+                else
+                {
+                    CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(lastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
+                    productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
+                    //  ProductsCopyingOnChange += ProductHandler_ProductsCopyingEventHandler;
+                    //   this.ProductsCopiedSuccessfull += ProductsCopiedSuccessfullEventHandler;
+                    Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
+                    productCopyThread.Start();
+                    //      productCopyThread.Join();
+                }
             }
         }
 
@@ -379,35 +396,58 @@ namespace SWB_OptionPackageInstaller
         {
             foreach (string item in artifactList)
             {
-                CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
-                artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
-                //   ArtifactsCopyingOnChange += ArtifactHandler_ArtifactsCopyingOnChange;
-                //       this.ArtifactsCopiedSuccessfull += ArtifactsCopiedSuccessfullEventHandler;
-                Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
-                artifactCopyThread.Start();
-                //artifactCopyThread.Join();
+                if (Form1.Instance.installationForPackages.Count < 1)
+                {
+                    CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
+                    artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
+                    Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
+                    artifactCopyThread.Start();
+                }
+                else
+
+                    if (!Form1.Instance.installationForPackages.Contains(item))
+                {
+                    continue;
+                }
+                else
+                {
+                    CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
+                    artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
+                    Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
+                    artifactCopyThread.Start();
+                    //artifactCopyThread.Join();
+                }
             }
         }
 
+        public int waitCounterArtifact = 0;
+
         private void ArtifactsCopier_OnProgressChanged(string fileName, double Persentage)
         {
-            Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
-            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0:0}%", artifactPercentageOverall += 7));
-            ProgressForm.Instance.ArtifactsPercent = artifactPercentageOverall;
+            if (waitCounterArtifact > 8)
+            {
+                Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
+                Form1.Instance.UpdateImportantStatus(string.Format("Overall Percent of artifacts copying process: {0:0}%", Persentage));
+                ProgressForm.Instance.ArtifactsPercent = Persentage;
+                waitCounterArtifact = 0;
+            }
+            else
+                waitCounterArtifact++;
         }
 
-        private void ProductHandler_ProductsCopyingEventHandler(double percent)
-        {
-            Form1.Instance.UpdateStatus(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
-            Form1.Instance.UpdateTextBox(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
-            MessageBox.Show(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
-        }
+        public int waitCounterProduct = 0;
 
         private void ProductCopier_OnProgressChanged(string fileName, double Persentage)
         {
-            Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
-            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of products copying process: {0:0}%", prodPercentageOverall + 25));
-            ProgressForm.Instance.ProductPercent = prodPercentageOverall;
+            if (waitCounterProduct > 8)
+            {
+                Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
+                Form1.Instance.UpdateImportantStatus(string.Format("Overall Percent of products copying process: {0:0}%", Persentage));
+                ProgressForm.Instance.ProductPercent = Persentage;
+                waitCounterProduct = 0;
+            }
+            else
+                waitCounterProduct++;
         }
 
         public void StartCustomFileCopierUntilTokenCancelled(CustomFileCopier customFileCopier, CancellationToken token, CancellationTokenSource tokenSource)
@@ -418,7 +458,7 @@ namespace SWB_OptionPackageInstaller
                  {
                      tokenSource = customFileCopier.CopyWithReturningCancellationTokenSource();
                      //Execute this when finished:
-                     //tokenSource.Cancel();
+                     tokenSource.Cancel();
                  }
                  token.ThrowIfCancellationRequested();
              }, token)
@@ -431,7 +471,7 @@ namespace SWB_OptionPackageInstaller
             {
                 return;
             }
-            taskToWaitFor.Wait();
+            // taskToWaitFor.Wait();
         }
 
         public DirectoryInfo ReadOutLastBuildPath(string fileNameFullPath)
@@ -558,27 +598,35 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
+        public int waitCounterSWB = 0;
+
         private void CustomFileCopier_OnProgressChanged(string file, double Persentage)
         {
-            Form1.Instance.UpdateStatus(string.Format("Copy {0} zip file to local path", Properties.Settings.Default.SWBZipFileName));
-            Form1.Instance.UpdateTextBox(String.Format("Copying SWB zip file: {0:0}%", Persentage));
-            ProgressForm.Instance.SWBPercent = Persentage;
+            if (waitCounterSWB > 8)
+            {
+                //   Form1.Instance.UpdateStatus(string.Format("Copy {0} zip file to local path", Properties.Settings.Default.SWBZipFileName));
+                Form1.Instance.UpdateImportantStatus(String.Format("Copying SWB zip file: {0:0}%", Persentage));
+                ProgressForm.Instance.SWBPercent = Persentage;
+                waitCounterSWB = 0;
+            }
+            else
+                waitCounterSWB++;
         }
 
         public void DecompressZipFile(FileInfo zipFile, DirectoryInfo destDir)
         {
             using (ZipArchive archive = ZipFile.OpenRead(zipFile.FullName))
             {
-                Thread unzipThread = new Thread(new ThreadStart(() =>
-                  {
-                      foreach (ZipArchiveEntry entry in archive.Entries)
-                      {
-                          // Gets the full path to ensure that relative segments are removed.
-                          string destinationPath = Path.GetFullPath(Path.Combine(destDir.FullName, entry.FullName));
-                          entry.ExtractToFile(destinationPath);
-                      }
-                  }));
-                ThreadManager.Instance.StartAndWaitOneThread(unzipThread);
+                //Thread unzipThread = new Thread(new ThreadStart(() =>
+                //  {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    // Gets the full path to ensure that relative segments are removed.
+                    string destinationPath = Path.GetFullPath(Path.Combine(destDir.FullName, entry.FullName));
+                    entry.ExtractToFile(destinationPath);
+                }
+                //}));
+                //ThreadManager.Instance.StartAndWaitOneThread(unzipThread);
             }
         }
 
@@ -650,15 +698,29 @@ namespace SWB_OptionPackageInstaller
             new Thread(new ThreadStart(() => PrepareThenCopyResources())).Start();
 
             Form1.Instance.UpdateStatus("Nececcary option packages has been copied from the latest NAV master build");
-            Form1.Instance.UpdateTextBox("Process Finished!");
+            Form1.Instance.UpdateImportantStatus("Process Finished!");
 
             //TODO: Uncomment and debug these
-            //   FillDatagridView();
-            //ConfigureCollectedOPsDatagrid(collectedOPs);
+            CommandControler.Instance.FillDatagridView();
+            CommandControler.Instance.ConfigureCollectedOPsDatagrid(collectedOPs);
 
-            // ThreadManager.Instance.WaitAllThreadToFinishWork();
+            //  ThreadManager.Instance.WaitAllThreadToFinishWork();
+            Form1.Instance.SetUIStateToWaitingCommands();
+            SetStartInstallVisible();
+            //CommandControler.Instance.CheckIfInstallationNeeded();
+        }
 
-            //     CommandControler.Instance.CheckIfInstallationNeeded();
+        private delegate void SetStartInstallVisibleDelegate();
+
+        private void SetStartInstallVisible()
+        {
+            Button bt = Form1.Instance.GetButtonStartWithInstall();
+            if (bt.InvokeRequired)
+            {
+                bt.Invoke(new SetStartInstallVisibleDelegate(SetStartInstallVisible));
+            }
+            else
+                bt.Visible = true;
         }
 
         ///THIS looks FINE!
@@ -676,7 +738,7 @@ namespace SWB_OptionPackageInstaller
                         await srcStream.CopyToAsync(destStream);
                         Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeedToCopy));
                         currentPercentage += oneFilePercentageValue;
-                        Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
+                        Form1.Instance.UpdateImportantStatus(string.Format("Current percentage: {0}%", currentPercentage));
                     }
                 }
             }
@@ -695,7 +757,7 @@ namespace SWB_OptionPackageInstaller
         //            await srcStream.CopyToAsync(destStream);
         //            Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeededToCopy));
         //            currentPercentage += oneFilePercentageValue;
-        //            Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
+        //            Form1.Instance.UpdateImportantStatus(string.Format("Current percentage: {0}%", currentPercentage));
         //        }
         //    }
         //}
@@ -711,7 +773,7 @@ namespace SWB_OptionPackageInstaller
         //            await srcStream.CopyToAsync(destStream);
         //            Form1.Instance.UpdateStatus(string.Format("Copying file: {0}", fileNeededToCopy));
         //            currentPercentage += oneFilePercentageValue;
-        //            Form1.Instance.UpdateTextBox(string.Format("Current percentage: {0}%", currentPercentage));
+        //            Form1.Instance.UpdateImportantStatus(string.Format("Current percentage: {0}%", currentPercentage));
         //        }
         //    }
         //}

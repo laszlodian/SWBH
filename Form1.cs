@@ -7,7 +7,12 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using CheckBox = System.Windows.Forms.CheckBox;
+using Control = System.Windows.Forms.Control;
+using TabControl = System.Windows.Forms.TabControl;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace SWB_OptionPackageInstaller
 {
@@ -245,48 +250,6 @@ namespace SWB_OptionPackageInstaller
                 textBox.Text = text;
         }
 
-        private delegate void UpdateTextBoxDelegate(string text);
-
-        public void UpdateTextBox(string text_in)
-        {
-            if (tbInfo1.InvokeRequired)
-            {
-                tbInfo1.Invoke(new UpdateTextBoxDelegate(UpdateTextBox), text_in);
-            }
-            else
-                tbInfo1.Text = text_in;
-            //  tbInfo1.Refresh();
-
-            if (tbInfo2.InvokeRequired)
-            {
-                tbInfo2.Invoke(new UpdateTextBoxDelegate(UpdateTextBox), text_in);
-            }
-            else
-                tbInfo2.Text = text_in;
-            //    tbInfo1.Refresh();
-        }
-
-        private delegate void AppendTextBoxDelegate(string text);
-
-        public void AppendTextBox(string text_in)
-        {
-            if (tbInfo1.InvokeRequired)
-            {
-                tbInfo1.Invoke(new AppendTextBoxDelegate(AppendTextBox), text_in);
-            }
-            else
-                tbInfo1.Text += "\r\n" + text_in;
-
-            if (tbInfo2.InvokeRequired)
-            {
-                tbInfo2.Invoke(new AppendTextBoxDelegate(AppendTextBox), text_in);
-            }
-            else
-                tbInfo2.Text += "\r\n" + text_in;
-        }
-
-        //private delegate void AppendUpdateStatusDelegate(string status);
-
         private delegate void UpdateStatusDelegate(string status);
 
         public void UpdateStatus(string status)
@@ -383,7 +346,7 @@ namespace SWB_OptionPackageInstaller
         {
             // this.Activate();
             UpdateStatus("Every given command has been finished successfully.");
-            UpdateTextBox("Waiting for further commands.");
+
             // this.Refresh();
             // this.Focus();
         }
@@ -393,39 +356,6 @@ namespace SWB_OptionPackageInstaller
             UpdateStatus("Initializing functions, and features...");
             Form1.Instance.SetLocalPathTextBox(((Form1.Instance.theTabControl.TabPages[2].Controls["tableLayoutPanel2"] as TableLayoutPanel).Controls["cbPathOfLocalFolder"] as CheckBox).Checked);
             tbSWBText = tbPathOfSWB.Text;
-        }
-
-        public Control GetReferencedControl(string controlName)
-        {
-            Control c = null;
-
-            if (controlName == "tbOptionPackagesServer")
-            {
-                c = ((this.Controls[theTabControl.Name] as TabControl).TabPages[2].Controls["tableLayoutPanel2"].Controls[controlName] as TextBox);
-
-                return (c as TextBox);
-            }
-
-            foreach (Control control in this.Controls)
-            {
-                if (control.GetType().Name == theTabControl.Name)
-                {
-                    foreach (Control item in control.Controls)
-                    {
-                        if ((item.Name == tableLayoutPanel1.Name) || (item.Name == tableLayoutPanel2.Name))
-                        {
-                            foreach (Control control1 in item.Controls)
-                            {
-                                if (control1.Name == controlName)
-                                {
-                                    c = control1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return c;
         }
 
         private string tbSWBText;
@@ -514,42 +444,6 @@ namespace SWB_OptionPackageInstaller
             EnumsAndComboBox_Load_For_All(sender, e);
         }
 
-        //public void ConfigureDgvForPackagesInFolder()
-        //{
-        //    UpdateStatus("DataGrid has been created, filling it in with corresponding values...");
-        //    // Initialize the DataGridView.
-        //    dgvForPackagesInFolder.AutoGenerateColumns = false;
-        //    dgvForPackagesInFolder.AutoSize = false;
-        //    dgvForPackagesInFolder.Dock = DockStyle.Fill;
-        //    dgvForPackagesInFolder.DataSource = BindingSourceForFoundPackages;
-
-        //    DataGridViewColumn column;
-
-        //    column = new DataGridViewTextBoxColumn();
-        //    column.DataPropertyName = "No";
-        //    column.Width = 50;
-        //    column.Name = "No.";
-        //    dgvForPackagesInFolder.Columns.Add(column);
-
-        //    column = new DataGridViewTextBoxColumn();
-        //    column.DataPropertyName = "OptionPackageName";
-        //    column.Name = "Option Package Name";
-        //    column.Width = 500;
-        //    dgvForPackagesInFolder.Columns.Add(column);
-
-        //    column = new DataGridViewCheckBoxColumn();
-        //    column.DataPropertyName = "InstallCell";
-        //    column.Name = "Install this package";
-        //    column.Width = 150;
-        //    dgvForPackagesInFolder.Columns.Add(column);
-
-        //    dgvForPackagesInFolder.AutoResizeColumnHeadersHeight();
-        //    dgvForPackagesInFolder.AutoResizeColumns();
-        //    dgvForPackagesInFolder.AutoResizeRows();
-        //    // Initialize the form.
-        //    dgvForPackagesInFolder.Text = "Founded option packages in folder - Choose which of them to install to SunriseWorkBench";
-        //}
-
         public void ConfigureDgvForPackagesInFolder(DataGridView dgv, BindingSource bindingSrc)
         {
             UpdateStatus("DataGrid has been created, filling it in with corresponding values...");
@@ -624,47 +518,49 @@ namespace SWB_OptionPackageInstaller
             dgvInstalledOPs.Text = "Founded option packages - Choose which of them to install to SunriseWorkBench";
         }
 
-        //public void EnumsAndComboBox_Load_For_CollectedOPs()
-        //{
-        //    UpdateStatus("DataGrid has been created, filling it in with corresponding values...");
-        //    // Initialize the DataGridView.
-        //    dgv_collectedOPs.AutoGenerateColumns = false;
-        //    dgv_collectedOPs.AutoSize = false;
-        //    dgv_collectedOPs.DataSource = bindingSourceForCollectedPackages;
+        public void EnumsAndComboBox_Load_For_CollectedOPs()
+        {
+            UpdateStatus("DataGrid has been created, filling it in with corresponding values...");
+            // Initialize the DataGridView.
+            dgv_collectedOPs.AutoGenerateColumns = false;
+            dgv_collectedOPs.AutoSize = false;
+            dgv_collectedOPs.DataSource = bindingSourceForCollectedPackages;
 
-        //    DataGridViewColumn column;
+            DataGridViewColumn column;
 
-        //    column = new DataGridViewTextBoxColumn();
-        //    column.DataPropertyName = "OptionPackageName";
-        //    column.Name = "Option Package Neve";
-        //    column.Width = 300;
-        //    dgv_collectedOPs.Columns.Add(column);
+            column = new DataGridViewTextBoxColumn();
+            column.DataPropertyName = "OptionPackageName";
+            column.Name = "Option Package Neve";
+            column.Width = 300;
+            dgv_collectedOPs.Columns.Add(column);
 
-        //    column = new DataGridViewTextBoxColumn();
-        //    column.DataPropertyName = "Version";
-        //    column.Width = 200;
-        //    column.Name = "Verzió";
-        //    dgv_collectedOPs.Columns.Add(column);
+            column = new DataGridViewTextBoxColumn();
+            column.DataPropertyName = "Version";
+            column.Width = 200;
+            column.Name = "Verzió";
+            dgv_collectedOPs.Columns.Add(column);
 
-        //    column = new DataGridViewCheckBoxColumn();
-        //    column.DataPropertyName = "InstallCell";
-        //    column.Name = "Installed";
-        //    column.Width = 140;
-        //    dgv_collectedOPs.Columns.Add(column);
-        //    dgv_collectedOPs.AutoResizeColumnHeadersHeight();
-        //    dgv_collectedOPs.AutoResizeColumns();
-        //    dgv_collectedOPs.AutoResizeRows();
-        //    // Initialize the form.
-        //    this.mainTabControl.TabPages[3].Controls.Add(dgv_collectedOPs);
-        //    dgv_collectedOPs.AutoSize = true;
-        //    dgv_collectedOPs.Text = "Founded option packages - Choose which of them to install to SunriseWorkBench";
-        //}
+            column = new DataGridViewCheckBoxColumn();
+            column.DataPropertyName = "InstallCell";
+            column.Name = "Installed";
+            column.Width = 140;
+            dgv_collectedOPs.Columns.Add(column);
+            dgv_collectedOPs.AutoResizeColumnHeadersHeight();
+            dgv_collectedOPs.AutoResizeColumns();
+            dgv_collectedOPs.AutoResizeRows();
+            // Initialize the form.
+            this.mainTabControl.TabPages[3].Controls.Add(dgv_collectedOPs);
+            dgv_collectedOPs.AutoSize = true;
+            dgv_collectedOPs.Text = "Founded option packages - Choose which of them to install to SunriseWorkBench";
+        }
 
         public EventWaitHandle handle;
         private BindingSource bindingSrcForRemotePackages = new BindingSource();
+        public List<string> installationForPackages = new List<string>();
 
         private void btOK_Click(object sender, EventArgs e)
         {
+            GetCheckedOptionPackagesFirstTab();
             UpdateStatus("Process started...");
             CommandControler.Instance.CorrectTextBoxesPath();
 
@@ -676,13 +572,11 @@ namespace SWB_OptionPackageInstaller
 
             ThreadManager.Instance.StartAndWaitOneThread(new Thread(new ThreadStart(() => ConfigureDataGridView(CommandControler.Instance.OptionPackageList))));
 
-            UpdateTextBox("Start installing features, be patient...");
             installThread = new Thread(new ThreadStart(CommandControler.Instance.InstallOptionPackages));
             installThread.SetApartmentState(ApartmentState.MTA);
             installThread.Name = "InstallOptionPackages";
             ThreadManager.Instance.StartAndWaitOneThread(installThread);
 
-            UpdateTextBox(string.Empty);
             UpdateStatus("Progress is done.");
         }
 
@@ -693,7 +587,7 @@ namespace SWB_OptionPackageInstaller
 
         private void btBrowseForPackages_Click(object sender, EventArgs e)
         {
-            if ((sender as Button).Name == "btBrowseSWBPath")
+            if ((sender as System.Windows.Forms.Button).Name == "btBrowseSWBPath")
             {
                 ArtifactHandler.Instance.OpenFolderBrowser(tbPathOfSWB);
             }
@@ -718,15 +612,64 @@ namespace SWB_OptionPackageInstaller
 
         private void btCollect_Click(object sender, EventArgs e)
         {
-            LocalPath = tbPathOfLocalFolder.Text;
+            DisableAllControllOnTabThree();
+            LocalPath = cbPathOfLocalFolder.Checked ? tbPathOfLocalFolder.Text : TbSWBText;
+            GetCheckedOptionPackagesThirdTab();
             ArtifactHandler.Instance.PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
         }
 
-        private void tbOptionPackagesServer_MouseHover(object sender, EventArgs e)
+        private void GetCheckedOptionPackagesThirdTab()
         {
-            ToolTip remoteLocation = new ToolTip();
-            remoteLocation.SetToolTip(tbOptionPackagesServer, tbOptionPackagesServer.Text);
-            remoteLocation.Active = true;
+            installationForPackages = new List<string>();
+            if (dgvOptionPackagesInFolder.Rows.Count > 1)
+            {
+                foreach (DataGridViewRow row in dgvOptionPackagesInFolder.Rows)
+                {
+                    if ((Convert.ToBoolean((row.Cells[2] as DataGridViewCheckBoxCell).Value)))
+                    {
+                        installationForPackages.Add(Convert.ToString((row.Cells[1] as DataGridViewTextBoxCell).Value));
+                    }
+                    else
+                        continue;
+                }
+            }
+        }
+
+        private void GetCheckedOptionPackagesFirstTab()
+        {
+            installationForPackages = new List<string>();
+            if (dgvForPackagesInFolder.Rows.Count > 1)
+            {
+                foreach (DataGridViewRow row in dgvForPackagesInFolder.Rows)
+                {
+                    if ((Convert.ToBoolean((row.Cells[2] as DataGridViewCheckBoxCell).Value)))
+                    {
+                        installationForPackages.Add(Convert.ToString((row.Cells[1] as DataGridViewTextBoxCell).Value));
+                    }
+                    else
+                        continue;
+                }
+            }
+        }
+
+        private delegate void DisableAllControllOnTabThreeDelegate();
+
+        private void DisableAllControllOnTabThree()
+        {
+            if (theTabControl.TabPages[2].InvokeRequired)
+            {
+                theTabControl.TabPages[2].Invoke(new DisableAllControllOnTabThreeDelegate(DisableAllControllOnTabThree));
+            }
+            else
+                foreach (Control item in theTabControl.TabPages[2].Controls)
+                {
+                    if (item.Name.EndsWith("Install") || item.GetType() == typeof(DataGridView))
+                    {
+                        continue;
+                    }
+                    else
+                        item.Enabled = false;
+                }
         }
 
         private void btStartSWB_Click(object sender, EventArgs e)
@@ -736,8 +679,29 @@ namespace SWB_OptionPackageInstaller
 
         private void CleanUpEverything_Click(object sender, EventArgs e)
         {
+            EnableAllControllOnTabThree();
             UpdateStatus("Delete all generated,copied resources..");
             Directory.Delete(destinationDir.FullName, true);
+        }
+
+        private delegate void EnableAllControllOnTabThreeDelegate();
+
+        private void EnableAllControllOnTabThree()
+        {
+            if (theTabControl.TabPages[2].InvokeRequired)
+            {
+                theTabControl.TabPages[2].Invoke(new EnableAllControllOnTabThreeDelegate(EnableAllControllOnTabThree));
+            }
+            else
+                foreach (Control item in theTabControl.TabPages[2].Controls)
+                {
+                    item.Enabled = true;
+                }
+        }
+
+        public System.Windows.Forms.Button GetButtonStartWithInstall()
+        {
+            return btContinueWithInstall;
         }
 
         private void btGenPath_Click(object sender, EventArgs e)
@@ -868,7 +832,7 @@ namespace SWB_OptionPackageInstaller
 
         private void btShowOptionPackagesInFolder_Click(object sender, EventArgs e)
         {
-            SetLastBuildPath();
+            ArtifactHandler.Instance.LastBuildPath = ArtifactHandler.Instance.ReadOutLastBuildPath(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
             CommandControler.Instance.CheckPackagesInFolder(ArtifactHandler.Instance.LastBuildPath.FullName, out bindingSrcForRemotePackages);
             dgvOptionPackagesInFolder.Visible = true;
             //  PrepareDataGridView(dgvOptionPackagesInFolder);
@@ -877,12 +841,25 @@ namespace SWB_OptionPackageInstaller
 
         private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ArtifactHandler.Instance.LastBuildPath = ArtifactHandler.Instance.ReadOutLastBuildPath(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
             SetLastBuildPath();
             if (theTabControl.SelectedIndex == 2)
             {
                 UpdateStatus(string.Format("Last Build Number: {0}", ArtifactHandler.Instance.LastBuildNumber));
-                UpdateTextBox(string.Format("Last Build Path: {0}", ArtifactHandler.Instance.LastBuildPath));
+                UpdateImportantStatus(string.Format("Last Build Path: {0}", ArtifactHandler.Instance.LastBuildPath));
             }
+        }
+
+        private delegate void UpdateImportantStatusDelegate(string text);
+
+        public void UpdateImportantStatus(string text)
+        {
+            if (lbInfo2.InvokeRequired)
+            {
+                lbInfo2.Invoke(new UpdateImportantStatusDelegate(UpdateImportantStatus), text);
+            }
+            else
+                lbInfo2.Text = string.Format("Important:{0}{1}", Environment.NewLine, text);
         }
 
         private void btContinueWithInstall_Click(object sender, EventArgs e)
@@ -942,6 +919,50 @@ namespace SWB_OptionPackageInstaller
             }
             else
                 tbPathOfSWB.Focus();
+        }
+
+        public Form popOutForm = new Form();
+        public DataGridView dgvPopedOut = new DataGridView();
+
+        private void btPopOut_Click(object sender, EventArgs e)
+        {
+            dgvPopedOut = dgvOptionPackagesInFolder;
+
+            popOutForm.Controls.Add(dgvPopedOut);
+            dgvPopedOut.Dock = DockStyle.Fill;
+            popOutForm.WindowState = FormWindowState.Maximized;
+
+            popOutForm.FormClosing += PopOutForm_FormClosing;
+            popOutForm.FormClosed += PopOutForm_FormClosed;
+            popOutForm.BringToFront();
+            popOutForm.Show();
+        }
+
+        public DataGridView data = new DataGridView();
+
+        private void PopOutForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            data = dgvPopedOut;
+        }
+
+        private void PopOutForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dgvOptionPackagesInFolder = new DataGridView();
+            this.tableLayoutPanel2.Controls.Add(this.dgvOptionPackagesInFolder, 1, 6);
+            dgvOptionPackagesInFolder.Dock = DockStyle.Fill;
+
+            dgvOptionPackagesInFolder = data;
+            dgvOptionPackagesInFolder.Visible = true;
+            popOutForm.Dispose();
+        }
+
+        private void btShowPackagesInRemotePath_Click(object sender, EventArgs e)
+        {
+            ArtifactHandler.Instance.LastBuildPath = ArtifactHandler.Instance.ReadOutLastBuildPath(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+            CommandControler.Instance.CheckPackagesInFolder(ArtifactHandler.Instance.LastBuildPath.FullName, out bindingSrcForRemotePackages);
+            dgvOptionPackagesInFolder.Visible = true;
+            //  PrepareDataGridView(dgvOptionPackagesInFolder);
+            ConfigureDgvForPackagesInFolder(dgvOptionPackagesInFolder, bindingSrcForRemotePackages);
         }
     }
 }

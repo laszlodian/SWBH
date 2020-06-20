@@ -28,14 +28,14 @@ namespace SWB_OptionPackageInstaller
         private void OnProgressChangedHandler(string fileName, double Persentage)
         {
             Form1.Instance.UpdateStatus(string.Format("Copying {1} file process: {0:00}%", Persentage, fileName));
-            Form1.Instance.UpdateTextBox(string.Format("Copying overall process: {0:00}%", Persentage));
+            Form1.Instance.UpdateImportantStatus(string.Format("Copying overall process: {0:00}%", Persentage));
         }
 
         private void OnCompleteHandler(ref bool Cancel)
         {
             Cancel = true;
             Form1.Instance.UpdateStatus("Files has been copied succesfull.");
-            Form1.Instance.UpdateTextBox("Copying overall process: 100%");
+            Form1.Instance.UpdateImportantStatus("Copying overall process: 100%");
             cancellationToken.Cancel();
         }
 

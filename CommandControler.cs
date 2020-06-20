@@ -205,7 +205,7 @@ namespace SWB_OptionPackageInstaller
 
             foreach (string package in Directory.GetFiles(pathIn, "*.zip"))
             {
-                Form1.Instance.UpdateTextBox(String.Format("Found feature: {0}", package));
+                Form1.Instance.UpdateImportantStatus(String.Format("Found feature: {0}", package));
 
                 if (package.Contains("SunriseWorkbench"))
                 {
@@ -229,7 +229,7 @@ namespace SWB_OptionPackageInstaller
                 MessageBox.Show(String.Format("SunriseWorkbench zip file not found at given path: {0}!", Form1.Instance.PathOfOptionPackages));
             }
             Trace.TraceInformation("{0} packages collected.", packages.Count());
-            Form1.Instance.UpdateTextBox(String.Format("Found package count: {0}", packages.Count));
+            Form1.Instance.UpdateImportantStatus(String.Format("Found package count: {0}", packages.Count));
 
             OptionPackageList = FormatPackageNames(packages);
         }
@@ -335,14 +335,14 @@ namespace SWB_OptionPackageInstaller
 
         private void Timer_Disposed(object sender, EventArgs e)
         {
-            Form1.Instance.UpdateTextBox(String.Format("Decompress of SWB finished!"));
+            Form1.Instance.UpdateImportantStatus(String.Format("Decompress of SWB finished!"));
             (sender as Timer).Stop();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             progress++;
-            Form1.Instance.UpdateTextBox(String.Format("Decompress SWB: {0}%", progress));
+            Form1.Instance.UpdateImportantStatus(String.Format("Decompress SWB: {0}%", progress));
             if (progress >= 100)
             {
                 (sender as Timer).Dispose();
@@ -445,7 +445,7 @@ namespace SWB_OptionPackageInstaller
                 Trace.TraceInformation("Option packages: {0}", OptionPackageList);
                 foreach (string item in OptionPackageList.Split('/'))
                 {
-                    Form1.Instance.UpdateTextBox(string.Format("Collected Option Package: {0}", item));
+                    Form1.Instance.UpdateImportantStatus(string.Format("Collected Option Package: {0}", item));
                 }
 
                 return true;
@@ -467,7 +467,7 @@ namespace SWB_OptionPackageInstaller
                 {
                     if (!features.Contains(version.Split('=')[0].Trim()))
                     {
-                        Form1.Instance.UpdateTextBox(string.Format("{0} feature version: {1}", version.Split('=')[0].Trim(), version.Split('=')[1].Trim()));
+                        Form1.Instance.UpdateImportantStatus(string.Format("{0} feature version: {1}", version.Split('=')[0].Trim(), version.Split('=')[1].Trim()));
                         PackagesInfo.Add(version.Split('=')[0].Trim(), version.Split('=')[1].Trim());
                         features.Add(version.Split('=')[0].Trim());
                         versions.Add(version.Split('=')[1].Trim());
@@ -482,7 +482,7 @@ namespace SWB_OptionPackageInstaller
 
                 Trace.TraceError("No version collected");
 
-                UpdateStatus("The application cleaning up the allocated resources and cleaning up the temporary files....", "lbInfoText");
+                Form1.Instance.UpdateStatus("The application cleaning up the allocated resources and cleaning up the temporary files....");
 
                 Application.Exit();
             }
@@ -521,9 +521,9 @@ namespace SWB_OptionPackageInstaller
         public string Run(string cmd)
         {
             if (cmd.Contains("installIUs"))
-                Form1.Instance.UpdateTextBox(string.Format("Running command: {0}", "Install Features"));
+                Form1.Instance.UpdateImportantStatus(string.Format("Running command: {0}", "Install Features"));
             else if (cmd.Contains("list"))
-                Form1.Instance.UpdateTextBox(string.Format("Running command: {0}", "Get All Features"));
+                Form1.Instance.UpdateImportantStatus(string.Format("Running command: {0}", "Get All Features"));
 
             Trace.TraceInformation("Command to Run: {0}", cmd);
             var processInfo = new ProcessStartInfo("cmd.exe", string.Format("/c {0}", cmd))
@@ -581,17 +581,19 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
 
         public void CheckPackagesInFolder(string pathOfOptionPackages)
         {
+            int opCount = 0;
             Form1.Instance.BindingSourceForFoundPackages = new BindingSource();
             foreach (FileInfo opFile in new DirectoryInfo(pathOfOptionPackages).GetFiles("*.zip", SearchOption.TopDirectoryOnly))
             {
                 opsInFolder.Add(opFile);
-                opCountInFolder++;
-                Form1.Instance.BindingSourceForFoundPackages.Add(new PackageGridModel(opFile.Name, opCountInFolder, true));
+                opCount++;
+                Form1.Instance.BindingSourceForFoundPackages.Add(new PackageGridModel(opFile.Name, opCount, true));
             }
         }
 
         public void CheckPackagesInFolder(string pathOfOptionPackages, out BindingSource bindingSource_in)
         {
+            int opCount = 0;
             bindingSource_in = new BindingSource();
 
             foreach (FileInfo opFile in new DirectoryInfo(Path.Combine(pathOfOptionPackages, "Product")).GetFiles("*.zip", SearchOption.TopDirectoryOnly))
@@ -599,8 +601,8 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
                 if (opFile.Name.Contains("KUKA.NavSolution"))
                 {
                     opsInFolder.Add(opFile);
-                    opCountInFolder++;
-                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCountInFolder, true));
+                    opCount++;
+                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCount, true));
                 }
             }
             foreach (FileInfo opFile in new DirectoryInfo(Path.Combine(pathOfOptionPackages, "Artifacts")).GetFiles("*.zip", SearchOption.TopDirectoryOnly))
@@ -608,8 +610,8 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
                 if (opFile.Name.Contains(".swb."))
                 {
                     opsInFolder.Add(opFile);
-                    opCountInFolder++;
-                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCountInFolder, true));
+                    opCount++;
+                    bindingSource_in.Add(new PackageGridModel(opFile.Name, opCount, true));
                 }
             }
         }
@@ -628,13 +630,13 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
             return allBuildDirectoryUnderMasterFolder;
         }
 
-        //public void FillDatagridView()
-        //{
-        //    UpdateStatus("Building DataGrid for reprezenting features...", "lbInfoText");
-        //    Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs());
+        public void FillDatagridView()
+        {
+            Form1.Instance.UpdateStatus("Building DataGrid for reprezenting features...");
+            Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs());
 
-        //    Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
-        //}
+            Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
+        }
 
         public void ShowImportantMessageDialog(string textToShow, string captionOfDialog = "Important Information")
         {
@@ -646,46 +648,21 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
             return MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
 
-        //private void ConfigureCollectedOPsDatagrid(List<string> collectedOPs)
-        //{
-        //    UpdateStatus("Configuring DataGrid", "lbInfoText");
-        //    string clearPackageName = string.Empty;
-        //    int i = 0;
-
-        //    foreach (string pkg in collectedOPs)
-        //    {
-        //        Form1.Instance.UpdateStatus(string.Format("Add to datagrid: {0}", pkg));
-        //        Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, lastBuildDir.Name, true));
-        //        i++;
-        //    }
-
-        //    Form1.Instance.dgv_collectedOPs.Font = new Font(dgv.Font, FontStyle.Regular);
-        //    Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
-        //}
-
-        //public void ShowImportantMessageDialog(string textToShow, string captionOfDialog, MessageBoxIcon iconToShow = MessageBoxIcon.Error)
-        //{
-        //    MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //}
-
-        private delegate void UpdateStatusDelegate(string txt, string name);
-
-        public void UpdateStatus(string info, string name)
+        public void ConfigureCollectedOPsDatagrid(List<string> collectedOPs)
         {
-            Control c = Form1.Instance.GetReferencedControl(name);
+            Form1.Instance.UpdateStatus("Configuring DataGrid");
+            string clearPackageName = string.Empty;
+            int i = 0;
 
-            if ((c != null) && (c.GetType() == typeof(Control)))
+            foreach (string pkg in collectedOPs)
             {
-                if ((c as TextBox).Name.Contains("lbInfo") || (c as TextBox).Name.Contains("tbInfo"))
-                {
-                    if ((c as TextBox).InvokeRequired)
-                    {
-                        (c as TextBox).Invoke(new UpdateStatusDelegate(UpdateStatus), new string[] { info, name });
-                    }
-                    else
-                        (c as TextBox).Text = info;
-                }
+                Form1.Instance.UpdateStatus(string.Format("Add to datagrid: {0}", pkg));
+                Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, ArtifactHandler.Instance.LastBuildPath.Name, true));
+                i++;
             }
+
+            Form1.Instance.dgv_collectedOPs.Font = new Font(dgv.Font, FontStyle.Regular);
+            Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
         }
     }
 }
