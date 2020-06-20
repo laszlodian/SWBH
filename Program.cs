@@ -14,6 +14,7 @@ namespace SWB_OptionPackageInstaller
         /// </summary>
         [STAThread]
         public static void Main(string[] args)
+
         {
             ProcessArguments(args);
 

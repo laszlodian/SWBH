@@ -42,42 +42,43 @@ namespace SWB_OptionPackageInstaller
 
         #region Properties
 
-        private DirectoryInfo lastBuildDir;
+        /*
+                private DirectoryInfo lastBuildDir;
 
-        public DirectoryInfo LastBuildDir
-        {
-            get { return lastBuildDir; }
-            set { lastBuildDir = value; }
-        }
+                public DirectoryInfo LastBuildDir
+                {
+                    get { return lastBuildDir; }
+                    set { lastBuildDir = value; }
+                }
 
-        private List<string> productsList = new List<string>();
+                private List<string> productsList = new List<string>();
 
-        public List<string> ProductsList
-        {
-            get { return productsList; }
-            set { productsList = value; }
-        }
+                public List<string> ProductsList
+                {
+                    get { return productsList; }
+                    set { productsList = value; }
+                }*/
 
         private int opCountInFolder;
 
         public int OPCountInFolder { get { return opCountInFolder; } set { opCountInFolder = value; } }
+        /*
+                private List<string> collectedOPs;
 
-        private List<string> collectedOPs;
+                public List<string> CollectedOPs
+                {
+                    get { return collectedOPs; }
+                    set { collectedOPs = value; }
+                }
 
-        public List<string> CollectedOPs
-        {
-            get { return collectedOPs; }
-            set { collectedOPs = value; }
-        }
+                private DirectoryInfo swbDestPath;
 
-        private DirectoryInfo swbDestPath;
-
-        public DirectoryInfo SwbDestPath
-        {
-            get { return swbDestPath; }
-            set { swbDestPath = value; }
-        }
-
+                public DirectoryInfo SwbDestPath
+                {
+                    get { return swbDestPath; }
+                    set { swbDestPath = value; }
+                }
+*/
         private string remoteDropDownPath = @"\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\";
 
         public string RemoteDropDownRootPath
@@ -86,26 +87,27 @@ namespace SWB_OptionPackageInstaller
             set { remoteDropDownPath = value; }
         }
 
-        public DirectoryInfo logDir { get; private set; }
+        /*
+                        public DirectoryInfo logDir { get; private set; }
 
-        private DirectoryInfo destinationDir;
+                        private DirectoryInfo destinationDir;
 
-        public DirectoryInfo swbDir { get; private set; }
+                        public DirectoryInfo swbDir { get; private set; }
 
-        public DirectoryInfo DestinationDir
-        {
-            get { return destinationDir; }
-            set { destinationDir = value; }
-        }
+                        public DirectoryInfo DestinationDir
+                        {
+                            get { return destinationDir; }
+                            set { destinationDir = value; }
+                        }
 
-        private FileInfo swbBuildPath;
+                        private FileInfo swbBuildPath;
 
-        public FileInfo SwbBuildPath
+                       public FileInfo SwbBuildPath
 
-        {
-            get { return swbBuildPath; }
-            set { swbBuildPath = value; }
-        }
+                        {
+                            get { return swbBuildPath; }
+                            set { swbBuildPath = value; }
+                        }*/
 
         private string sunriseWorkbenchVersion = string.Empty;
 
@@ -119,7 +121,7 @@ namespace SWB_OptionPackageInstaller
 
         public string SWBZipFilePath { get { return sWBZipFilePath; } set { sWBZipFilePath = value; } }
 
-        private Thread th;
+        //     private Thread th;
         private string optionPackageList;
 
         public string OptionPackageList
@@ -131,31 +133,31 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
-        private bool allOPsFound;
+        //       private bool allOPsFound;
 
-        public bool AllOPsFound
-        {
-            get { return allOPsFound; }
-            set { allOPsFound = value; }
-        }
+        /*       public bool AllOPsFound
+               {
+                   get { return allOPsFound; }
+                   set { allOPsFound = value; }
+               }*/
 
-        private string swbPath;
+        //      private string swbPath;
 
-        public string SwbPath { get { return swbPath; } set { swbPath = value; } }
+        //    public string SwbPath { get { return swbPath; } set { swbPath = value; } }
 
-        private DirectoryInfo lastBuildPath;
+        //       private DirectoryInfo lastBuildPath;
 
-        public DirectoryInfo LastBuildPath { get { return lastBuildPath; } set { lastBuildPath = value; } }
+        //       public DirectoryInfo LastBuildPath { get { return lastBuildPath; } set { lastBuildPath = value; } }
 
-        public string ActProduct { get { return actProduct; } set { actProduct = value; } }
+        //public string ActProduct { get { return actProduct; } set { actProduct = value; } }
 
-        private bool collectionFinished;
-        public bool CollectionFinished { get { return collectionFinished; } set { collectionFinished = value; } }
+        //      private bool collectionFinished;
+        //       public bool CollectionFinished { get { return collectionFinished; } set { collectionFinished = value; } }
 
-        private List<string> artifactList = new List<string>();
-        public List<string> ArtifactList { get { return artifactList; } set { artifactList = value; } }
+        //       private List<string> artifactList = new List<string>();
+        //     public List<string> ArtifactList { get { return artifactList; } set { artifactList = value; } }
 
-        public string actProduct;//{ get; private set; }
+        //    public string actProduct;//{ get; private set; }
 
         #endregion Properties
 
@@ -167,29 +169,31 @@ namespace SWB_OptionPackageInstaller
         //   private BindingSource bindingSourceForIstalledPackages = new BindingSource();
         private List<FileInfo> opsInFolder = new List<FileInfo>();
 
-        private bool swbFoundInfolder;
-        private BackgroundWorker bgWorker;
+        //      private bool swbFoundInfolder;
+        //      private BackgroundWorker bgWorker;
         private int progress = 0;
-        private List<string> listOfFeatures = new List<string>();
+
+        //    private List<string> listOfFeatures = new List<string>();
         private List<string> packagesNames = new List<string>();
+
         public List<string> features = new List<string>();
         public List<string> versions = new List<string>();
         public int PackagesCount = 0;
-        private string ArtifactToCopy;
+        //        private string ArtifactToCopy;
 
         #endregion Variables
 
         public CommandControler()
         {
             Instance = this;
-            Trace.TraceInformation("Trace marked for store with name: {0}", "COMMANDCONTROLLER");
+            Trace.TraceInformation("CommandControler constructor");
 
-            remoteDropDownPath = @"\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\";
+            RemoteDropDownRootPath = @"\\KUKA.int.kuka.com\s\KROS_Pool\Daily\NavigationSolution\master\";
         }
 
         private Thread unzipSWBThread;
-        private string lastBuildDirName;
-        public string LastBuildDirName { get { return lastBuildDirName; } set { lastBuildDirName = value; } }
+        //       private string lastBuildDirName;
+        //       public string LastBuildDirName { get { return lastBuildDirName; } set { lastBuildDirName = value; } }
 
         private delegate void unzipSWBThreadStarting(Action unzippingSWB);
 
@@ -297,17 +301,18 @@ namespace SWB_OptionPackageInstaller
             //else
             //    Directory.CreateDirectory(Form1.Instance.PathOfSWB);
 
-            new Thread(new ThreadStart(() => SetupTimer())).Start();
-
-            if (Form1.Instance.theTabControl.SelectedIndex == 0)
+            SetupTimer();
+            Stopwatch s = new Stopwatch();
+            s.Start();
+            foreach (FileInfo item in new DirectoryInfo(Form1.Instance.TbSWBText).GetFiles("*.*"))
             {
-                ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.PathOfSWB);
+                File.Delete(item.FullName);
             }
-            else
-            {
-                ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.tbPathOfLocalFolder.Text);
-            }
+            Directory.Delete(Form1.Instance.TbSWBText, true);
+            ZipFile.ExtractToDirectory(SWBZipFilePath, Form1.Instance.TbSWBText);
 
+            Trace.TraceInformation("Unzipping takes {0} seconds", s.Elapsed.TotalSeconds);
+            Form1.Instance.UpdateStatus(string.Format("unzip takes {0} secs", s.Elapsed.TotalSeconds));
             using (StreamReader sr = new StreamReader(Path.Combine(Form1.Instance.PathOfSWB, ".eclipseproduct")))
             {
                 string line = sr.ReadLine();
@@ -340,6 +345,7 @@ namespace SWB_OptionPackageInstaller
 
         private void Timer_Disposed(object sender, EventArgs e)
         {
+            Form1.Instance.UpdateTextBox(String.Format("Decompress of SWB finished!"));
             (sender as Timer).Stop();
         }
 
@@ -350,16 +356,6 @@ namespace SWB_OptionPackageInstaller
             if (progress >= 100)
             {
                 (sender as Timer).Dispose();
-            }
-        }
-
-        private void TimerForDecompressing(ZipArchive zipArchive)
-        {
-            int percent = 0;
-            foreach (ZipArchiveEntry item in zipArchive.Entries)
-            {
-                UpdateStatus(string.Format("Decompress SWB: {0}%", percent++), "tbInfo1");
-                Thread.Sleep(100);
             }
         }
 
@@ -418,11 +414,11 @@ namespace SWB_OptionPackageInstaller
 
             string featuresListResult = Run(commandToRun);
             Trace.TraceInformation("Feature command result: \r\n{0}", featuresListResult);
-
+            Stopwatch stopwatch = new Stopwatch();
             List<string> featuresList = GetFeatures(featuresListResult);
             string featuresCommandPart = BuildFeaturesStringForCommand(featuresList);
             Trace.TraceInformation("Features part of command: {0}", featuresCommandPart);
-
+            Trace.TraceInformation(string.Format("listing of features takes: {0} secs", stopwatch.Elapsed.TotalSeconds));
             ThreadManager.Instance.StartAndWaitOneThread(new Thread(new ThreadStart(() => IterateOverFeatures(features))));
 
             commandToRun = string.Format(installCommandFormat, OptionPackageList, Form1.Instance.PathOfSWB, featuresCommandPart);
@@ -569,28 +565,29 @@ namespace SWB_OptionPackageInstaller
             Form1.Instance.PathOfOptionPackages = Path.GetFullPath(Form1.Instance.PathOfOptionPackages);
         }
 
-        public DirectoryInfo LookUpForLastBuildDirectory(string buildNumber, string lastBuildPath)
-        {
-            DirectoryInfo sourceFolderOfRemoteBuild = null;
+        /*public DirectoryInfo LookUpForLastBuildDirectory(string buildNumber, string lastBuildPath)
 
-            Form1.Instance.UpdateStatus("Connected to remote dropdown folder, initializing copy process");
+            private DirectoryInfo sourceFolderOfRemoteBuild = null;
+
+        Form1.Instance.UpdateStatus("Connected to remote dropdown folder, initializing copy process");
 
             foreach (string actDirectory in (Directory.GetDirectories(lastBuildPath)))
             {
                 if (actDirectory.Contains(buildNumber))
                 {
-                    sourceFolderOfRemoteBuild = new DirectoryInfo(actDirectory);
+                    sourceFolderOfRemoteBuild = private new DirectoryInfo(actDirectory);
+
                     break;
                 }
-            }
 
-            Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderOfRemoteBuild));
+Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderOfRemoteBuild));
 
             if (sourceFolderOfRemoteBuild == null)
                 throw new Exception("lastBuildDirectory couldn't found!");
 
             return sourceFolderOfRemoteBuild;
         }
+        */
 
         public void CheckPackagesInFolder(string pathOfOptionPackages)
         {
@@ -641,15 +638,15 @@ namespace SWB_OptionPackageInstaller
             return allBuildDirectoryUnderMasterFolder;
         }
 
-        public void FillDatagridView()
-        {
-            UpdateStatus("Building DataGrid for reprezenting features...", "lbInfoText");
-            Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs());
+        //public void FillDatagridView()
+        //{
+        //    UpdateStatus("Building DataGrid for reprezenting features...", "lbInfoText");
+        //    Form1.Instance.PrepareDataGridView(Form1.Instance.GetDGVForCollectedOPs());
 
-            Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
-        }
+        //    Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
+        //}
 
-        private void ShowImportantMessageDialog(string textToShow, string captionOfDialog = "Important Information")
+        public void ShowImportantMessageDialog(string textToShow, string captionOfDialog = "Important Information")
         {
             MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -659,27 +656,27 @@ namespace SWB_OptionPackageInstaller
             MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
 
-        private void ConfigureCollectedOPsDatagrid(List<string> collectedOPs)
-        {
-            UpdateStatus("Configuring DataGrid", "lbInfoText");
-            string clearPackageName = string.Empty;
-            int i = 0;
+        //private void ConfigureCollectedOPsDatagrid(List<string> collectedOPs)
+        //{
+        //    UpdateStatus("Configuring DataGrid", "lbInfoText");
+        //    string clearPackageName = string.Empty;
+        //    int i = 0;
 
-            foreach (string pkg in collectedOPs)
-            {
-                Form1.Instance.UpdateStatus(string.Format("Add to datagrid: {0}", pkg));
-                Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, lastBuildDir.Name, true));
-                i++;
-            }
+        //    foreach (string pkg in collectedOPs)
+        //    {
+        //        Form1.Instance.UpdateStatus(string.Format("Add to datagrid: {0}", pkg));
+        //        Form1.Instance.bindingSourceForCollectedPackages.Add(new PackageGridModel(pkg, lastBuildDir.Name, true));
+        //        i++;
+        //    }
 
-            Form1.Instance.dgv_collectedOPs.Font = new Font(dgv.Font, FontStyle.Regular);
-            Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
-        }
+        //    Form1.Instance.dgv_collectedOPs.Font = new Font(dgv.Font, FontStyle.Regular);
+        //    Form1.Instance.EnumsAndComboBox_Load_For_CollectedOPs();
+        //}
 
-        public void ShowImportantMessageDialog(string textToShow, string captionOfDialog, MessageBoxIcon iconToShow = MessageBoxIcon.Error)
-        {
-            MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        //public void ShowImportantMessageDialog(string textToShow, string captionOfDialog, MessageBoxIcon iconToShow = MessageBoxIcon.Error)
+        //{
+        //    MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //}
 
         private delegate void UpdateStatusDelegate(string txt, string name);
 
