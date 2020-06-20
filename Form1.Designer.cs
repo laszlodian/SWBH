@@ -61,9 +61,10 @@
             this.btCollectFeaturesFromRemote = new System.Windows.Forms.Button();
             this.lbInfoText2 = new System.Windows.Forms.Label();
             this.cbAllBuildsOnServer = new System.Windows.Forms.ComboBox();
-            this.tbPageCollectedArtifacts = new System.Windows.Forms.TabPage();
             this.dgvOptionPackagesInFolder = new System.Windows.Forms.DataGridView();
             this.btShowOptionPackagesInFolder = new System.Windows.Forms.Button();
+            this.tbPageCollectedArtifacts = new System.Windows.Forms.TabPage();
+            this.btContinueWithInstall = new System.Windows.Forms.Button();
             this.mainTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -108,7 +109,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.44056F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.55944F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 193F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 195F));
             this.tableLayoutPanel1.Controls.Add(this.btCleanUp, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.btOptions, 2, 4);
             this.tableLayoutPanel1.Controls.Add(this.btBrowseForPackages, 2, 1);
@@ -145,10 +146,10 @@
             // 
             this.btCleanUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.btCleanUp.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btCleanUp.Location = new System.Drawing.Point(859, 231);
+            this.btCleanUp.Location = new System.Drawing.Point(857, 231);
             this.btCleanUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btCleanUp.Name = "btCleanUp";
-            this.btCleanUp.Size = new System.Drawing.Size(188, 46);
+            this.btCleanUp.Size = new System.Drawing.Size(190, 46);
             this.btCleanUp.TabIndex = 15;
             this.btCleanUp.Text = "Clean Up";
             this.btCleanUp.UseVisualStyleBackColor = true;
@@ -158,7 +159,7 @@
             // btOptions
             // 
             this.btOptions.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btOptions.Location = new System.Drawing.Point(859, 332);
+            this.btOptions.Location = new System.Drawing.Point(857, 332);
             this.btOptions.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btOptions.Name = "btOptions";
             this.btOptions.Size = new System.Drawing.Size(164, 46);
@@ -171,10 +172,10 @@
             // 
             this.btBrowseForPackages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.btBrowseForPackages.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btBrowseForPackages.Location = new System.Drawing.Point(859, 59);
+            this.btBrowseForPackages.Location = new System.Drawing.Point(857, 59);
             this.btBrowseForPackages.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btBrowseForPackages.Name = "btBrowseForPackages";
-            this.btBrowseForPackages.Size = new System.Drawing.Size(188, 36);
+            this.btBrowseForPackages.Size = new System.Drawing.Size(190, 36);
             this.btBrowseForPackages.TabIndex = 4;
             this.btBrowseForPackages.Text = "...";
             this.btBrowseForPackages.UseVisualStyleBackColor = true;
@@ -186,7 +187,7 @@
             this.tbPathOfPackages.Location = new System.Drawing.Point(342, 63);
             this.tbPathOfPackages.Margin = new System.Windows.Forms.Padding(4);
             this.tbPathOfPackages.Name = "tbPathOfPackages";
-            this.tbPathOfPackages.Size = new System.Drawing.Size(509, 28);
+            this.tbPathOfPackages.Size = new System.Drawing.Size(507, 28);
             this.tbPathOfPackages.TabIndex = 3;
             this.tbPathOfPackages.Tag = "1";
             this.tbPathOfPackages.Text = "C:\\_SWB\\OpModeProblem\\";
@@ -222,7 +223,7 @@
             this.tbPathOfSWB.Location = new System.Drawing.Point(342, 12);
             this.tbPathOfSWB.Margin = new System.Windows.Forms.Padding(4);
             this.tbPathOfSWB.Name = "tbPathOfSWB";
-            this.tbPathOfSWB.Size = new System.Drawing.Size(509, 28);
+            this.tbPathOfSWB.Size = new System.Drawing.Size(507, 28);
             this.tbPathOfSWB.TabIndex = 1;
             this.tbPathOfSWB.Tag = "0";
             this.tbPathOfSWB.Text = "C:\\_SWB\\OpModeProblem\\SWB";
@@ -235,7 +236,7 @@
             this.btOK.Location = new System.Drawing.Point(342, 107);
             this.btOK.Margin = new System.Windows.Forms.Padding(4);
             this.btOK.Name = "btOK";
-            this.btOK.Size = new System.Drawing.Size(509, 67);
+            this.btOK.Size = new System.Drawing.Size(507, 67);
             this.btOK.TabIndex = 5;
             this.btOK.Text = "Start";
             this.btOK.UseVisualStyleBackColor = true;
@@ -271,7 +272,7 @@
             this.btStartSWB.Location = new System.Drawing.Point(341, 231);
             this.btStartSWB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btStartSWB.Name = "btStartSWB";
-            this.btStartSWB.Size = new System.Drawing.Size(511, 46);
+            this.btStartSWB.Size = new System.Drawing.Size(509, 46);
             this.btStartSWB.TabIndex = 9;
             this.btStartSWB.Text = "Start installed SWB";
             this.btStartSWB.UseVisualStyleBackColor = true;
@@ -282,10 +283,10 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(859, 8);
+            this.button2.Location = new System.Drawing.Point(857, 8);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(188, 36);
+            this.button2.Size = new System.Drawing.Size(190, 36);
             this.button2.TabIndex = 10;
             this.button2.Text = "...";
             this.button2.UseVisualStyleBackColor = true;
@@ -295,10 +296,10 @@
             // 
             this.btGenPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btGenPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btGenPath.Location = new System.Drawing.Point(859, 105);
+            this.btGenPath.Location = new System.Drawing.Point(857, 105);
             this.btGenPath.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btGenPath.Name = "btGenPath";
-            this.btGenPath.Size = new System.Drawing.Size(188, 71);
+            this.btGenPath.Size = new System.Drawing.Size(190, 71);
             this.btGenPath.TabIndex = 2;
             this.btGenPath.Text = "Generate Path";
             this.btGenPath.UseVisualStyleBackColor = true;
@@ -322,7 +323,7 @@
             this.btCheckOPs.Location = new System.Drawing.Point(341, 332);
             this.btCheckOPs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btCheckOPs.Name = "btCheckOPs";
-            this.btCheckOPs.Size = new System.Drawing.Size(511, 46);
+            this.btCheckOPs.Size = new System.Drawing.Size(509, 46);
             this.btCheckOPs.TabIndex = 12;
             this.btCheckOPs.Text = "Check Option Packages In Folder";
             this.btCheckOPs.UseVisualStyleBackColor = true;
@@ -375,29 +376,31 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.93252F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 69.06748F));
+            this.tableLayoutPanel2.Controls.Add(this.btContinueWithInstall, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.cbSpecifiedBuild, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.tbPathOfLocalFolder, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.lbOPServer, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.tbOptionPackagesServer, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.tbInfo2, 0, 7);
-            this.tableLayoutPanel2.Controls.Add(this.button1, 1, 7);
+            this.tableLayoutPanel2.Controls.Add(this.tbInfo2, 0, 8);
+            this.tableLayoutPanel2.Controls.Add(this.button1, 1, 8);
             this.tableLayoutPanel2.Controls.Add(this.cbPathOfLocalFolder, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.btCollectFeaturesFromRemote, 1, 5);
             this.tableLayoutPanel2.Controls.Add(this.lbInfoText2, 0, 5);
             this.tableLayoutPanel2.Controls.Add(this.cbAllBuildsOnServer, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.dgvOptionPackagesInFolder, 1, 6);
-            this.tableLayoutPanel2.Controls.Add(this.btShowOptionPackagesInFolder, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.btShowOptionPackagesInFolder, 0, 7);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 8;
+            this.tableLayoutPanel2.RowCount = 9;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -408,7 +411,7 @@
             // 
             this.cbSpecifiedBuild.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbSpecifiedBuild.AutoSize = true;
-            this.cbSpecifiedBuild.Location = new System.Drawing.Point(81, 42);
+            this.cbSpecifiedBuild.Location = new System.Drawing.Point(81, 43);
             this.cbSpecifiedBuild.Margin = new System.Windows.Forms.Padding(4);
             this.cbSpecifiedBuild.Name = "cbSpecifiedBuild";
             this.cbSpecifiedBuild.Size = new System.Drawing.Size(300, 29);
@@ -424,7 +427,7 @@
             this.tbPathOfLocalFolder.BackColor = System.Drawing.Color.Gainsboro;
             this.tbPathOfLocalFolder.Enabled = false;
             this.tbPathOfLocalFolder.ForeColor = System.Drawing.Color.Gray;
-            this.tbPathOfLocalFolder.Location = new System.Drawing.Point(467, 123);
+            this.tbPathOfLocalFolder.Location = new System.Drawing.Point(467, 125);
             this.tbPathOfLocalFolder.Margin = new System.Windows.Forms.Padding(4);
             this.tbPathOfLocalFolder.Name = "tbPathOfLocalFolder";
             this.tbPathOfLocalFolder.Size = new System.Drawing.Size(1028, 30);
@@ -472,7 +475,7 @@
             this.button1.Location = new System.Drawing.Point(466, 560);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(1030, 56);
+            this.button1.Size = new System.Drawing.Size(1030, 55);
             this.button1.TabIndex = 10;
             this.button1.Text = "Clean Up Copied Resources";
             this.button1.UseVisualStyleBackColor = true;
@@ -485,7 +488,7 @@
             this.cbPathOfLocalFolder.AutoSize = true;
             this.cbPathOfLocalFolder.Checked = true;
             this.cbPathOfLocalFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbPathOfLocalFolder.Location = new System.Drawing.Point(115, 123);
+            this.cbPathOfLocalFolder.Location = new System.Drawing.Point(115, 125);
             this.cbPathOfLocalFolder.Margin = new System.Windows.Forms.Padding(4);
             this.cbPathOfLocalFolder.Name = "cbPathOfLocalFolder";
             this.cbPathOfLocalFolder.Size = new System.Drawing.Size(233, 29);
@@ -499,7 +502,7 @@
             // 
             this.btCollectFeaturesFromRemote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.btCollectFeaturesFromRemote.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btCollectFeaturesFromRemote.Location = new System.Drawing.Point(467, 161);
+            this.btCollectFeaturesFromRemote.Location = new System.Drawing.Point(467, 163);
             this.btCollectFeaturesFromRemote.Margin = new System.Windows.Forms.Padding(4);
             this.btCollectFeaturesFromRemote.Name = "btCollectFeaturesFromRemote";
             this.btCollectFeaturesFromRemote.Size = new System.Drawing.Size(1028, 32);
@@ -513,7 +516,7 @@
             this.lbInfoText2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lbInfoText2.AutoSize = true;
             this.lbInfoText2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbInfoText2.Location = new System.Drawing.Point(158, 165);
+            this.lbInfoText2.Location = new System.Drawing.Point(158, 167);
             this.lbInfoText2.Name = "lbInfoText2";
             this.lbInfoText2.Size = new System.Drawing.Size(147, 24);
             this.lbInfoText2.TabIndex = 8;
@@ -524,11 +527,40 @@
             this.cbAllBuildsOnServer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cbAllBuildsOnServer.Enabled = false;
             this.cbAllBuildsOnServer.FormattingEnabled = true;
-            this.cbAllBuildsOnServer.Location = new System.Drawing.Point(466, 44);
+            this.cbAllBuildsOnServer.Location = new System.Drawing.Point(466, 41);
             this.cbAllBuildsOnServer.Name = "cbAllBuildsOnServer";
             this.cbAllBuildsOnServer.Size = new System.Drawing.Size(1030, 33);
             this.cbAllBuildsOnServer.TabIndex = 15;
             this.cbAllBuildsOnServer.SelectedIndexChanged += new System.EventHandler(this.cbAllBuildsOnServer_SelectedIndexChanged);
+            // 
+            // dgvOptionPackagesInFolder
+            // 
+            this.dgvOptionPackagesInFolder.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOptionPackagesInFolder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvOptionPackagesInFolder.Location = new System.Drawing.Point(466, 202);
+            this.dgvOptionPackagesInFolder.Name = "dgvOptionPackagesInFolder";
+            this.dgvOptionPackagesInFolder.RowHeadersWidth = 51;
+            this.tableLayoutPanel2.SetRowSpan(this.dgvOptionPackagesInFolder, 2);
+            this.dgvOptionPackagesInFolder.RowTemplate.Height = 24;
+            this.dgvOptionPackagesInFolder.Size = new System.Drawing.Size(1030, 322);
+            this.dgvOptionPackagesInFolder.TabIndex = 16;
+            // 
+            // btShowOptionPackagesInFolder
+            // 
+            this.btShowOptionPackagesInFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.btShowOptionPackagesInFolder.AutoEllipsis = true;
+            this.btShowOptionPackagesInFolder.AutoSize = true;
+            this.btShowOptionPackagesInFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btShowOptionPackagesInFolder.Location = new System.Drawing.Point(3, 372);
+            this.btShowOptionPackagesInFolder.Name = "btShowOptionPackagesInFolder";
+            this.btShowOptionPackagesInFolder.Size = new System.Drawing.Size(457, 36);
+            this.btShowOptionPackagesInFolder.TabIndex = 17;
+            this.btShowOptionPackagesInFolder.Text = "Show Option Packages at Remote Folder";
+            this.btShowOptionPackagesInFolder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btShowOptionPackagesInFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btShowOptionPackagesInFolder.UseCompatibleTextRendering = true;
+            this.btShowOptionPackagesInFolder.UseVisualStyleBackColor = true;
+            this.btShowOptionPackagesInFolder.Click += new System.EventHandler(this.btShowOptionPackagesInFolder_Click);
             // 
             // tbPageCollectedArtifacts
             // 
@@ -542,27 +574,20 @@
             this.tbPageCollectedArtifacts.Text = "Collected Option Packages";
             this.tbPageCollectedArtifacts.UseVisualStyleBackColor = true;
             // 
-            // dgvOptionPackagesInFolder
+            // btContinueWithInstall
             // 
-            this.dgvOptionPackagesInFolder.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvOptionPackagesInFolder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvOptionPackagesInFolder.Location = new System.Drawing.Point(466, 200);
-            this.dgvOptionPackagesInFolder.Name = "dgvOptionPackagesInFolder";
-            this.dgvOptionPackagesInFolder.RowHeadersWidth = 51;
-            this.dgvOptionPackagesInFolder.RowTemplate.Height = 24;
-            this.dgvOptionPackagesInFolder.Size = new System.Drawing.Size(1030, 324);
-            this.dgvOptionPackagesInFolder.TabIndex = 16;
-            // 
-            // btShowOptionPackagesInFolder
-            // 
-            this.btShowOptionPackagesInFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.btShowOptionPackagesInFolder.Location = new System.Drawing.Point(3, 344);
-            this.btShowOptionPackagesInFolder.Name = "btShowOptionPackagesInFolder";
-            this.btShowOptionPackagesInFolder.Size = new System.Drawing.Size(457, 35);
-            this.btShowOptionPackagesInFolder.TabIndex = 17;
-            this.btShowOptionPackagesInFolder.Text = "Show Option Packages at Remote Folder";
-            this.btShowOptionPackagesInFolder.UseVisualStyleBackColor = true;
-            this.btShowOptionPackagesInFolder.Click += new System.EventHandler(this.btShowOptionPackagesInFolder_Click);
+            this.btContinueWithInstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.btContinueWithInstall.AutoSize = true;
+            this.btContinueWithInstall.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btContinueWithInstall.Location = new System.Drawing.Point(3, 208);
+            this.btContinueWithInstall.Name = "btContinueWithInstall";
+            this.btContinueWithInstall.Size = new System.Drawing.Size(457, 36);
+            this.btContinueWithInstall.TabIndex = 18;
+            this.btContinueWithInstall.Text = "Continue With Installation";
+            this.btContinueWithInstall.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btContinueWithInstall.UseCompatibleTextRendering = true;
+            this.btContinueWithInstall.UseVisualStyleBackColor = true;
+            this.btContinueWithInstall.Click += new System.EventHandler(this.btContinueWithInstall_Click);
             // 
             // Form1
             // 
@@ -626,5 +651,6 @@
         private System.Windows.Forms.ComboBox cbAllBuildsOnServer;
         private System.Windows.Forms.DataGridView dgvOptionPackagesInFolder;
         private System.Windows.Forms.Button btShowOptionPackagesInFolder;
+        private System.Windows.Forms.Button btContinueWithInstall;
     }
 }

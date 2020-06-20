@@ -213,6 +213,18 @@ namespace SWB_OptionPackageInstaller
             _products = Properties.Settings.Default.ProductsNeededToCopy;
             Properties.Settings.Default.ProductsNeededToCopy.CopyTo(productsArray, 0);
             productsList.AddRange(productsArray);
+
+            StartProgressEvent += ArtifactHandler_StartProgressEvent;
+        }
+
+        private Action ArtifactHandler_StartProgressEvent()
+        {
+            return new Action(StartProgressForm);
+        }
+
+        private void StartProgressForm()
+        {
+            new Thread(new ThreadStart(() => pbForm = new ProgressForm())).Start();
         }
 
         //public void CheckIfInstallationNeeded()
@@ -272,70 +284,146 @@ namespace SWB_OptionPackageInstaller
             //      PreparingToCopyOPsFromRemotePath(lastBuildPathFile, LastBuildDirName);
         }
 
+        public delegate void ProductsCopiedSuccessfullDelegate();
+
+        public event ProductsCopyingOnChangeDelegate ProductsCopyingOnChange;
+
+        public delegate void ProductsCopyingOnChangeDelegate(double percent);
+
+        public event ArtifactsCopyingOnChangeDelegate ArtifactsCopyingOnChange;
+
+        public delegate void ArtifactsCopyingOnChangeDelegate(double percent);
+
+        public event ProductsCopiedSuccessfullDelegate ProductsCopiedSuccessfull;
+
+        public delegate void ArtifactsCopiedSuccessfullDelegate();
+
+        public event ArtifactsCopiedSuccessfullDelegate ArtifactsCopiedSuccessfull;
+
         public void PrepareThenCopyResources()
         {
             //Create the folder architecture on local computer
             Task createTestLibraryHierarchy = new Task(CreateSWBTestDirectoryHierarchy);
-            createTestLibraryHierarchy.ConfigureAwait(false);
-            createTestLibraryHierarchy.RunSynchronously();
+            createTestLibraryHierarchy.Start();
+            //createTestLibraryHierarchy.Wait();
 
             //Read out the build number from the txt file on the server
             lastBuildFilePath = new DirectoryInfo(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
             lastBuildNumber = ReadOutLastBuildNumber(Path.Combine(RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
 
-            ReadOutSWBPathFromJSON(LastBuildPath);
+            Thread thread = new Thread(new ThreadStart(() => ReadOutSWBPathFromJSON(LastBuildPath)));
+            //thread.Start();
+            ThreadManager.Instance.StartTasks(thread);
+            Thread.Sleep(30);
             //Copy the artifacts and products from the newest build
             CancellationToken cancellationToken = new CancellationToken(true);
+            while (LastBuildPath.FullName.EndsWith("\\master\\"))
+            {
+                Thread.Sleep(50);
+            }
             //   CopyEveryFilesFromDirectoryToDestinationDir(productsList, Path.Combine(LastBuildPath.FullName, "Product"), LocalPath.FullName, cancellationToken).Wait();
             //    CopyEveryFilesFromDirectoryToDestinationDir(artifactList, Path.Combine(LastBuildPath.FullName, "Artifacts"), LocalPath.FullName, cancellationToken).Wait();
-            foreach (string item in artifactList)
-            {
-                CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
-                artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
-                artifactsCopier.OnComplete += ArtifactsCopier_OnComplete;
-                Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
-                artifactCopyThread.Start();
-                //artifactCopyThread.Join();
-            }
-            foreach (string item in productsList)
-            {
-                CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
-                productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
-                productCopier.OnComplete += ProductCopier_OnComplete;
-                Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
-                productCopyThread.Start();
-                //      productCopyThread.Join();
-            }
+            Thread thread2 = new Thread(new ThreadStart(() => CopyArtifacts()));
+            thread2.Start();
+
+            Thread thread3 = new Thread(new ThreadStart(() => CopyProducts()));
+            thread3.Start();
+            thread3.Join();
             Form1.Instance.SetUIStateToWaitingCommands();
             //  PreparingToCopyOPsFromRemotePath(RemoteDropDownRootPath);
         }
 
-        public int prodPercentageOverall = 0;
-
-        private void ProductCopier_OnProgressChanged(double Persentage, ref bool Cancel)
+        private void CopyProducts()
         {
-            Form1.Instance.UpdateStatus(string.Format("Current file copy process percentage: {0}%", Persentage));
-            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0}%", prodPercentageOverall + 3));
+            foreach (string item in productsList)
+            {
+                CustomFileCopier productCopier = new CustomFileCopier(Path.Combine(Path.Combine(lastBuildPath.FullName, "Product"), item), Path.Combine(LocalPath.FullName, item));
+                productCopier.OnProgressChanged += ProductCopier_OnProgressChanged;
+                ProductsCopyingOnChange += ProductHandler_ProductsCopyingEventHandler;
+                this.ProductsCopiedSuccessfull += ProductsCopiedSuccessfullEventHandler;
+                Thread productCopyThread = new Thread(new ThreadStart(() => productCopier.Copy()));
+                productCopyThread.Start();
+                //      productCopyThread.Join();
+            }
         }
 
-        private void ProductCopier_OnComplete()
+        private void CopyArtifacts()
         {
-            Form1.Instance.UpdateStatus("All required option package has been copied to local folder from the Product folder.");
+            foreach (string item in artifactList)
+            {
+                CustomFileCopier artifactsCopier = new CustomFileCopier(Path.Combine(Path.Combine(LastBuildPath.FullName, "Artifacts"), item), Path.Combine(LocalPath.FullName, item));
+                artifactsCopier.OnProgressChanged += ArtifactsCopier_OnProgressChanged;
+                ArtifactsCopyingOnChange += ArtifactHandler_ArtifactsCopyingOnChange;
+                this.ArtifactsCopiedSuccessfull += ArtifactsCopiedSuccessfullEventHandler;
+                Thread artifactCopyThread = new Thread(new ThreadStart(() => artifactsCopier.Copy()));
+                artifactCopyThread.Start();
+                //artifactCopyThread.Join();
+            }
+        }
+
+        private void ProductHandler_ProductsCopyingEventHandler(double percent)
+        {
+            Form1.Instance.UpdateStatus(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
+            Form1.Instance.UpdateTextBox(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
+            MessageBox.Show(string.Format("this is my new eventhandler for onchange products copy: {0}%", percent));
+        }
+
+        private void ArtifactHandler_ArtifactsCopyingOnChange(double percent)
+        {
+            Form1.Instance.UpdateStatus(string.Format("this is my new eventhandler for onchange artifacts copy: {0}%", percent));
+            Form1.Instance.UpdateTextBox(string.Format("this is my new eventhandler for onchange artifacts copy: {0}%", percent));
+            MessageBox.Show(string.Format("this is my new eventhandler for onchange artifacts copy: {0}%", percent));
+        }
+
+        private void ProductsCopiedSuccessfullEventHandler()
+        {
+            Form1.Instance.UpdateStatus("Required option package has been copied to local folder from the Product folder.");
             Form1.Instance.UpdateTextBox("Products successfully copied.");
         }
 
-        private void ArtifactsCopier_OnComplete()
+        private void ArtifactsCopiedSuccessfullEventHandler()
         {
-            Form1.Instance.UpdateStatus("All required option package has been copied to local folder from the Artifacts");
+            Form1.Instance.UpdateStatus("Required option package has been copied to local folder from the Artifacts");
             Form1.Instance.UpdateTextBox("Artifacts successfully copied");
         }
 
-        public int artifactPercentageOverall = 0;
+        public int prodPercentageOverall = 0;
 
-        private void ArtifactsCopier_OnProgressChanged(double Persentage, ref bool Cancel)
+        private void ProductCopier_OnProgressChanged(string fileName, double Persentage)
         {
-            Form1.Instance.UpdateStatus(string.Format("Current file copy process percentage: {0}%", Persentage));
-            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0}%", artifactPercentageOverall + 3));
+            Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
+            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of products copying process: {0}%", prodPercentageOverall + 25));
+        }
+
+        public int artifactPercentageOverall = 0;
+        private ProgressForm pbForm;
+        internal bool startProgresses = false;
+
+        public void StartCustomFileCopierUntilTokenCancelled(CustomFileCopier customFileCopier, CancellationToken token, CancellationTokenSource tokenSource)
+        {
+            Task taskToWaitFor = Task.Run(() =>
+             {
+                 while (!token.IsCancellationRequested)
+                 {
+                     tokenSource = customFileCopier.CopyWithReturningCancellationTokenSource();
+                     //Execute this when finished:
+                     //tokenSource.Cancel();
+                 }
+                 token.ThrowIfCancellationRequested();
+             }, token)
+            .ContinueWith(t =>
+         {
+             t.Exception?.Handle(e => true);
+             Trace.TraceError("You have canceled the task");
+         }, TaskContinuationOptions.OnlyOnCanceled);
+
+            taskToWaitFor.Wait();
+        }
+
+        private void ArtifactsCopier_OnProgressChanged(string fileName, double Persentage)
+        {
+            Form1.Instance.UpdateStatus(string.Format("{1} file copy process percentage: {0:00}%", Persentage, fileName));
+            Form1.Instance.UpdateTextBox(string.Format("Overall Percent of artifacts copying process: {0}%", artifactPercentageOverall += 7));
         }
 
         //public static void FileCopy(string source, string destination)
@@ -635,14 +723,16 @@ namespace SWB_OptionPackageInstaller
 
                 CustomFileCopier customFileCopier = new CustomFileCopier(SwbBuildPath.FullName, Path.GetFullPath(Path.Combine(destinationDir.FullName, Properties.Settings.Default.SWBZipFileName)));
                 customFileCopier.OnProgressChanged += CustomFileCopier_OnProgressChanged;
-                customFileCopier.Copy();
+                CancellationTokenSource tokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 40));
+                CancellationToken cancellationToken = new CancellationToken(false);
+                StartCustomFileCopierUntilTokenCancelled(customFileCopier, cancellationToken, tokenSource); ;
                 //  ThreadManager.Instance.StartAndWaitOneThread(new Thread(new ThreadStart(() => customFileCopier.Copy())));
 
                 CommandControler.Instance.UnzipSunriseWorkbench(new FileInfo(Path.Combine(destinationDir.FullName, Properties.Settings.Default.SWBZipFileName)), new DirectoryInfo(Form1.Instance.tbPathOfLocalFolder.Text));
             }
         }
 
-        private void CustomFileCopier_OnProgressChanged(double Persentage, ref bool Cancel)
+        private void CustomFileCopier_OnProgressChanged(string file, double Persentage)
         {
             Form1.Instance.UpdateStatus(string.Format("Copy {0} zip file to local path", Properties.Settings.Default.SWBZipFileName));
             Form1.Instance.UpdateTextBox(String.Format("Copying SWB zip file: {0:0}%", Persentage));
@@ -716,10 +806,9 @@ namespace SWB_OptionPackageInstaller
                             swbPath = readedLine.Split(':')[1].Trim(new char[] { '"', ',' });
                             swbPath = swbPath.Substring(swbPath.IndexOf("//"));
                             Form1.Instance.UpdateStatus(string.Format("SWB zip file path: {0}", swbPath));
-                            Task copyProductTask = new Task(() => CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product"))));
-                            await copyProductTask.ConfigureAwait(true);
-                            copyProductTask.RunSynchronously();
-                            copyProductTask.Wait();
+
+                            CopySWBFromRemoteLocation(Path.GetFullPath(Path.Combine(swbPath, "Product")));
+
                             //    ThreadManager.Instance.StartAndWaitOneThread(copyProductThread);
                             sr.Close();
                             //  return swbPath;
@@ -730,9 +819,17 @@ namespace SWB_OptionPackageInstaller
             }
         }
 
+        public event StartProgressDelegate StartProgressEvent;
+
         public void PrepareAndFinalizeRemoteDropDownCopyingOptionPackages()
         {
-            PrepareThenCopyResources();
+            StartProgressEvent();
+            //EventHandler.CreateDelegate(typeof(EventHandler), typeof(StartProgressEvent));
+            //   StartProgressEvent.BeginInvoke(new StartProgressDelegate(StartProgress), StartProgress);
+            //  new Thread(new ThreadStart(() => pbForm.ShowDialog())).Start();
+            new Thread(new ThreadStart(() => PrepareThenCopyResources())).Start();
+
+            //   startProgresses = true;
             Form1.Instance.UpdateStatus("Nececcary option packages has been copied from the latest NAV master build");
             Form1.Instance.UpdateTextBox("Process Finished!");
 
@@ -924,5 +1021,19 @@ namespace SWB_OptionPackageInstaller
         //    dgv.Refresh();
         //    dgv.Update();
         //}
+
+        public delegate Action StartProgressDelegate();
+
+        public Action StartProgress()
+        {
+            if (pbForm.InvokeRequired)
+            {
+                pbForm.Invoke(new StartProgressDelegate(StartProgress));
+            }
+            else
+                startProgresses = true;
+
+            return new Action(pbForm.StartPB);
+        }
     }
 }

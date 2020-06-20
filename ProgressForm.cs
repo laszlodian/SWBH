@@ -13,119 +13,164 @@ namespace SWB_OptionPackageInstaller
 {
     public partial class ProgressForm : Form
     {
-        public BackgroundWorker bg = new BackgroundWorker();
-        private string newInfo;
-
-        public string NewInfo
-        {
-            get { return newInfo; }
-            set { newInfo = value; }
-        }
+        public BackgroundWorker bgProgressSWB = new BackgroundWorker();
+        public BackgroundWorker bgProgressArtifacts = new BackgroundWorker();
+        public BackgroundWorker bgProgressProducts = new BackgroundWorker();
 
         public static ProgressForm Instance = null;
-        public Thread progressThread;
-        private bool v;
 
         public ProgressForm()
         {
-
             Instance = this;
-
+            this.Visible = false;
+            while (!ArtifactHandler.Instance.startProgresses)
+            {
+                Thread.Sleep(1000);
+            }
+            this.Visible = true;
             InitializeComponent();
-
-            
+            InitBackgroundWorker();
             PerformLayout();
             BringToFront();
             Refresh();
-            //    InitProgressBar();
-            //    progressThread = new Thread(new ThreadStart(IncreaseProgressBar));
-            //    progressThread.Start(); ;
-
-            BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += Bg_DoWork;
-            bg.ProgressChanged += Bg_ProgressChanged;
-            bg.RunWorkerCompleted += Bg_RunWorkerCompleted;
-
-            InitBackgroundWorker();
-            bg.RunWorkerAsync();
-
-        }
-
-        public ProgressForm(bool v)
-        {
-            this.v = v;
+            TopMost = true;
         }
 
         public void InitBackgroundWorker()
         {
-            progressBar1.Maximum = 100;
-            progressBar1.Step = 1;
-            progressBar1.Value = 0;
-          
+            InitProgressBar();
 
+            InitAllBackGroundWorker();
         }
+
+        private void InitAllBackGroundWorker()
+        {
+            bgProgressArtifacts.DoWork += BgProgressArtifacts_DoWork;
+            bgProgressArtifacts.ProgressChanged += BgProgressArtifacts_ProgressChanged;
+            bgProgressArtifacts.RunWorkerCompleted += BgProgressArtifacts_RunWorkerCompleted;
+            bgProgressArtifacts.WorkerReportsProgress = true;
+
+            bgProgressProducts.DoWork += BgProgressProducts_DoWork;
+            bgProgressProducts.ProgressChanged += BgProgressProducts_ProgressChanged;
+            bgProgressProducts.RunWorkerCompleted += BgProgressProducts_RunWorkerCompleted;
+            bgProgressProducts.WorkerReportsProgress = true;
+
+            bgProgressSWB.DoWork += BgProgressSWB_DoWork;
+            bgProgressSWB.ProgressChanged += BgProgressSWB_ProgressChanged;
+            bgProgressSWB.RunWorkerCompleted += BgProgressSWB_RunWorkerCompleted;
+            bgProgressSWB.WorkerReportsProgress = true;
+
+            bgProgressArtifacts.RunWorkerAsync();
+            bgProgressProducts.RunWorkerAsync();
+            bgProgressSWB.RunWorkerAsync();
+        }
+
+        private void BgProgressSWB_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BgProgressSWB_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar2.Value += e.ProgressPercentage;
+        }
+
+        private void BgProgressSWB_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int counter = 0;
+
+            while (counter < 20)
+            {
+                Thread.Sleep(200);
+                bgProgressSWB.ReportProgress(100 / 20);
+                counter++;
+            }
+        }
+
+        private void BgProgressProducts_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BgProgressProducts_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbProducts.Value += e.ProgressPercentage;
+        }
+
+        private void BgProgressProducts_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int counter = 0;
+
+            while (counter < 4)
+            {
+                Thread.Sleep(2000);
+                bgProgressSWB.ReportProgress(100 / 4);
+                counter++;
+            }
+        }
+
+        private void BgProgressArtifacts_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BgProgressArtifacts_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            int counter = 0;
+
+            while (counter < 13)
+            {
+                Thread.Sleep(400);
+                bgProgressSWB.ReportProgress(100 / 13);
+                counter++;
+            }
+        }
+
+        private void BgProgressArtifacts_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void InitProgressBar()
         {
-            progressBar1.Maximum = 100;
-            progressBar1.Step = 1;
-            progressBar1.Value = 1;
+            pbProducts.Value = 1;
+            pbProducts.Maximum = 100;
+            pbProducts.Step = 1;
 
+            pbArtifatcts.Value = 1;
+            pbArtifatcts.Maximum = 100;
+            pbArtifatcts.Step = 1;
 
+            progressBar2.Maximum = 100;
+            progressBar2.Step = 1;
+            progressBar2.Value = 1;
         }
 
-        public void IncreaseProgressBar()
-        {
+        private delegate void ChangeInfoTextDelegate(ProgressBar progressBar);
 
-            
-            for (int j = 0; j < 100000; j++)
+        public void ChangeInfoText(ProgressBar progressBar)
+        {
+            if (progressBar.InvokeRequired)
             {
-                //if (progressBar1.Value >= 99)
-                //{
-                //    progressBar1.Value = 0;
-                //}
-
-                double pow = Math.Pow(j, j); //Calculation
-                progressBar1.Value++;
-                progressBar1.PerformStep();
-            }
-
-        }
-
-
-
-        private void Bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            MessageBox.Show("BackGroundWorker completed: progress form");
-        }
-
-        private void Bg_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressBar1.Value = e.ProgressPercentage;
-        }
-
-        private void Bg_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var backgroundWorker = sender as BackgroundWorker;
-            for (int j = 0; j < 100000; j++)
-            {
-                double pow = Math.Pow(j,j);
-                backgroundWorker.ReportProgress((j * 100) / 100000);
-            }
-        }
-        delegate void ChangeInfoTextDelegate();
-        public void ChangeInfoText()
-        {
-            if (lbInfo.InvokeRequired)
-            {
-                lbInfo.Invoke(new ChangeInfoTextDelegate(ChangeInfoText));
+                progressBar.Invoke(new ChangeInfoTextDelegate(ChangeInfoText), progressBar);
             }
             else
-
-                lbInfo.Text = string.Format("{0}", NewInfo);
-
-
+                progressBar.Text = string.Format("{0}%", progressBar.Value);
         }
 
+        public async void Result()
+        {
+        }
 
+        public async void Start(IAsyncResult ar)
+        {
+        }
+
+        internal void StartPB()
+        {
+            this.Visible = true;
+            this.BringToFront();
+            this.ShowDialog();
+        }
     }
 }

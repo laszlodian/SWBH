@@ -291,16 +291,6 @@ namespace SWB_OptionPackageInstaller
 
         public void UnzipSunriseWorkbench()
         {
-            //if (Directory.Exists(Form1.Instance.PathOfSWB))
-            //{
-            //    foreach (string item in Directory.GetFiles(Form1.Instance.PathOfSWB))
-            //    {
-            //        File.Delete(item);
-            //    }
-            //}
-            //else
-            //    Directory.CreateDirectory(Form1.Instance.PathOfSWB);
-
             SetupTimer();
             Stopwatch s = new Stopwatch();
             s.Start();
@@ -651,9 +641,9 @@ Form1.Instance.UpdateStatus(String.Format("Last build directory:", sourceFolderO
             MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public void ShowQuestionDialog(string textToShow, string captionOfDialog = "Question - User answer needed")
+        public DialogResult ShowQuestionDialog(string textToShow, string captionOfDialog = "Question - User answer needed")
         {
-            MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return MessageBox.Show(String.Format("{0}", textToShow), captionOfDialog, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
 
         //private void ConfigureCollectedOPsDatagrid(List<string> collectedOPs)

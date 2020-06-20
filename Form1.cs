@@ -381,11 +381,11 @@ namespace SWB_OptionPackageInstaller
 
         internal void SetUIStateToWaitingCommands()
         {
-            this.Activate();
+            // this.Activate();
             UpdateStatus("Every given command has been finished successfully.");
             UpdateTextBox("Waiting for further commands.");
-            this.Refresh();
-            this.Focus();
+            // this.Refresh();
+            // this.Focus();
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -718,6 +718,7 @@ namespace SWB_OptionPackageInstaller
 
         private void btCollect_Click(object sender, EventArgs e)
         {
+            LocalPath = tbPathOfLocalFolder.Text;
             ArtifactHandler.Instance.PrepareAndFinalizeRemoteDropDownCopyingOptionPackages();
         }
 
@@ -833,7 +834,7 @@ namespace SWB_OptionPackageInstaller
 
         private void SetLastBuildPath()
         {
-            if (!cbSpecifiedBuild.Checked)
+            if (!cbSpecifiedBuild.Checked && string.IsNullOrEmpty(ArtifactHandler.Instance.RemoteDropDownRootPath))
             {
                 ArtifactHandler.Instance.LastBuildPath = ArtifactHandler.Instance.ReadOutLastBuildPath(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
             }
@@ -858,6 +859,65 @@ namespace SWB_OptionPackageInstaller
                 UpdateStatus(string.Format("Last Build Number: {0}", ArtifactHandler.Instance.LastBuildNumber));
                 UpdateTextBox(string.Format("Last Build Path: {0}", ArtifactHandler.Instance.LastBuildPath));
             }
+        }
+
+        private void btContinueWithInstall_Click(object sender, EventArgs e)
+        {
+            ContinueWithInstall(LocalPath);
+        }
+
+        private delegate void ChangeToInstallTabDelegate(string path);
+
+        private void ContinueWithInstall(string localPath)
+        {
+            ChangeToInstallTab(localPath);
+        }
+
+        public void ChangeToInstallTab(string path)
+        {
+            if (this.theTabControl.InvokeRequired)
+            {
+                theTabControl.Invoke(new ChangeToInstallTabDelegate(ChangeToInstallTab), path);
+            }
+            else
+            {
+                theTabControl.SelectedTab = theTabControl.TabPages[0];
+                SetOPFolderText(path);
+            }
+        }
+
+        private delegate void SetOPFolderTextDelegate(string path);
+
+        private void SetOPFolderText(string path)
+        {
+            if (tbPathOfPackages.InvokeRequired)
+            {
+                tbPathOfPackages.Invoke(new SetOPFolderTextDelegate(SetOPFolderText), path);
+            }
+            else
+            {
+                tbPathOfPackages.Text = path;
+                DialogResult res = CommandControler.Instance.ShowQuestionDialog("Do you want to continue with insallation?");
+                if (res == DialogResult.No)
+                {
+                    SetSWBPathTextBoxFocused();
+                    return;
+                }
+                else
+                    btOK_Click(btOK, EventArgs.Empty);
+            }
+        }
+
+        private delegate void SetSWBPathTextBoxFocusedDelegate();
+
+        private void SetSWBPathTextBoxFocused()
+        {
+            if (tbPathOfSWB.InvokeRequired)
+            {
+                tbPathOfSWB.Invoke(new SetSWBPathTextBoxFocusedDelegate(SetSWBPathTextBoxFocused));
+            }
+            else
+                tbPathOfSWB.Focus();
         }
     }
 }
