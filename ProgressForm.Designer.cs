@@ -36,6 +36,7 @@
             this.pbArtifatcts = new System.Windows.Forms.ProgressBar();
             this.lbInfo = new System.Windows.Forms.Label();
             this.progressBar2 = new System.Windows.Forms.ProgressBar();
+            this.btHide = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,16 +51,18 @@
             this.tableLayoutPanel1.Controls.Add(this.pbArtifatcts, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lbInfo, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.progressBar2, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btHide, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1317, 153);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1317, 211);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
             // lbArtifactsProgress
@@ -80,7 +83,7 @@
             this.lbProductsProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lbProductsProgress.AutoSize = true;
             this.lbProductsProgress.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbProductsProgress.Location = new System.Drawing.Point(4, 108);
+            this.lbProductsProgress.Location = new System.Drawing.Point(4, 94);
             this.lbProductsProgress.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbProductsProgress.Name = "lbProductsProgress";
             this.lbProductsProgress.Size = new System.Drawing.Size(306, 27);
@@ -91,7 +94,7 @@
             // pbProducts
             // 
             this.pbProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbProducts.Location = new System.Drawing.Point(318, 107);
+            this.pbProducts.Location = new System.Drawing.Point(318, 94);
             this.pbProducts.Margin = new System.Windows.Forms.Padding(4);
             this.pbProducts.Name = "pbProducts";
             this.pbProducts.Size = new System.Drawing.Size(995, 28);
@@ -128,13 +131,32 @@
             this.progressBar2.Size = new System.Drawing.Size(995, 28);
             this.progressBar2.TabIndex = 2;
             // 
+            // btHide
+            // 
+            this.btHide.AutoEllipsis = true;
+            this.btHide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.SetColumnSpan(this.btHide, 2);
+            this.btHide.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btHide.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+            this.btHide.FlatAppearance.BorderSize = 3;
+            this.btHide.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btHide.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btHide.Location = new System.Drawing.Point(3, 129);
+            this.btHide.Name = "btHide";
+            this.btHide.Size = new System.Drawing.Size(1311, 79);
+            this.btHide.TabIndex = 7;
+            this.btHide.Text = "Hide";
+            this.btHide.UseCompatibleTextRendering = true;
+            this.btHide.UseVisualStyleBackColor = true;
+            this.btHide.Click += new System.EventHandler(this.btHide_Click);
+            // 
             // ProgressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.NavajoWhite;
-            this.ClientSize = new System.Drawing.Size(1317, 153);
+            this.ClientSize = new System.Drawing.Size(1317, 211);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
@@ -160,5 +182,6 @@
         private System.Windows.Forms.ProgressBar pbArtifatcts;
         private System.Windows.Forms.Label lbInfo;
         private System.Windows.Forms.ProgressBar progressBar2;
+        public System.Windows.Forms.Button btHide;
     }
 }

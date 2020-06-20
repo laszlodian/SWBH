@@ -74,7 +74,7 @@ namespace SWB_OptionPackageInstaller
             CommandControler commandControler = new CommandControler();
             SQLManager sQLManager = new SQLManager();
             CheckStatesHandler checkStatesHandler = new CheckStatesHandler();
-            Form1 = new Form1();
+            //    Form1 = new Form1();
             ThreadManager threadManager = new ThreadManager();
         }
     }

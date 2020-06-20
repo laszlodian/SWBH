@@ -829,14 +829,38 @@ namespace SWB_OptionPackageInstaller
 
         private void cbAllBuildsOnServer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetLastBuildPath();
+            CbInvoker();
         }
 
-        private void SetLastBuildPath()
+        private delegate void CbInvokerDelegate();
+
+        public void CbInvoker()
+        {
+            if (cbAllBuildsOnServer.InvokeRequired)
+            {
+                cbAllBuildsOnServer.Invoke(new CbInvokerDelegate(CbInvoker));
+            }
+            else
+                SetLastBuildPath();
+        }
+
+        public void SetLastBuildPath()
         {
             if (!cbSpecifiedBuild.Checked && string.IsNullOrEmpty(ArtifactHandler.Instance.RemoteDropDownRootPath))
             {
                 ArtifactHandler.Instance.LastBuildPath = ArtifactHandler.Instance.ReadOutLastBuildPath(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, Properties.Settings.Default.LastBuildNumberTextFile));
+            }
+            else
+                GetLastBuildPath();
+        }
+
+        private delegate void GetLastBuildPathDelegate();
+
+        private void GetLastBuildPath()
+        {
+            if (cbAllBuildsOnServer.InvokeRequired)
+            {
+                cbAllBuildsOnServer.Invoke(new GetLastBuildPathDelegate(GetLastBuildPath));
             }
             else
                 ArtifactHandler.Instance.LastBuildPath = new DirectoryInfo(Path.Combine(ArtifactHandler.Instance.RemoteDropDownRootPath, cbAllBuildsOnServer.Text));

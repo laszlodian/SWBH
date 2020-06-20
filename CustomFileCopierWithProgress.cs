@@ -52,7 +52,10 @@ namespace SWB_OptionPackageInstaller
             using (FileStream source = new FileStream(SourceFilePath, FileMode.Open, FileAccess.Read))
             {
                 long fileLength = source.Length;
-
+                if (!File.Exists(DestFilePath))
+                {
+                    Directory.CreateDirectory(DestFilePath.Substring(DestFilePath.LastIndexOf("\\") + 1));
+                }
                 using (FileStream dest = new FileStream(DestFilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                 {
                     long totalBytes = 0;
