@@ -723,3 +723,4 @@ V:\repos\swbH\SWBH\bin\Debug\ThreadPoolHelper.xml
 V:\repos\swbH\SWBH\obj\Debug\SWB_OptionPackageInstaller.csproj.CopyComplete
 V:\repos\swbH\SWBH\obj\Debug\SWB_OptionPackageInstaller.exe
 V:\repos\swbH\SWBH\obj\Debug\SWB_OptionPackageInstaller.pdb
+V:\repos\swbH\SWBH\obj\Debug\SWB_OptionPackageInstaller.csprojAssemblyReference.cache

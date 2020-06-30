@@ -212,9 +212,10 @@ namespace SWB_OptionPackageInstaller
                     Form1.Instance.UpdateStatus("Decompressing SunriseWorkbench....");
                     SWBZipFilePath = package;
 
-                    Thread thread = CreateTheUnzippingThread();
-                    thread.Priority = ThreadPriority.Highest;
-                    ThreadManager.Instance.StartAndWaitOneThread(thread);
+                    UnzipSunriseWorkbench();
+                    //Thread thread = CreateTheUnzippingThread();
+                    //thread.Priority = ThreadPriority.Highest;
+                    //ThreadManager.Instance.StartAndWaitOneThread(thread);
                     //    ThreadManager.Instance.WaitAllThreadToFinishWork();
 
                     isSWBfound = true;
@@ -234,6 +235,7 @@ namespace SWB_OptionPackageInstaller
             OptionPackageList = FormatPackageNames(packages);
         }
 
+        /*
         private Thread CreateTheUnzippingThread()
         {
             unzipSWBThread = new Thread(new ThreadStart(UnzipSunriseWorkbench));
@@ -242,8 +244,7 @@ namespace SWB_OptionPackageInstaller
 
             return unzipSWBThread;
         }
-
-        /*   private async void NewMethod(CastingPipelineWithAwait<IAwaitablePipeline<Task>> pipeline)
+   private async void NewMethod(CastingPipelineWithAwait<IAwaitablePipeline<Task>> pipeline)
            {
                await pipeline.Execute(StartingUnzipThreadWithPipeline);
            }
@@ -294,6 +295,11 @@ namespace SWB_OptionPackageInstaller
             SetupTimer();
             Stopwatch s = new Stopwatch();
             s.Start();
+
+            if (!Directory.Exists(Form1.Instance.TbSWBText))
+            {
+                Directory.CreateDirectory(Form1.Instance.TbSWBText);
+            }
             foreach (FileInfo item in new DirectoryInfo(Form1.Instance.TbSWBText).GetFiles("*.*"))
             {
                 File.Delete(item.FullName);

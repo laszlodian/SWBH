@@ -12,7 +12,7 @@ namespace SWB_OptionPackageInstaller.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -81,7 +81,6 @@ namespace SWB_OptionPackageInstaller.Properties {
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <string>0000354955;00;KUKA.NavSolution Backup 1.16.zip</string>
   <string>0000354959;00;KUKA.NavSolution MapEditor 1.16.zip</string>
-  <string>0000358676;00;KUKA.NavSolution Lift 1.16 KMP1500-S.zip</string>
   <string>0000356423;00;KUKA.NavSolution 1.16 KMP1500-S.zip</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection ProductsNeededToCopy {

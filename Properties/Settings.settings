@@ -31,7 +31,6 @@
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;0000354955;00;KUKA.NavSolution Backup 1.16.zip&lt;/string&gt;
   &lt;string&gt;0000354959;00;KUKA.NavSolution MapEditor 1.16.zip&lt;/string&gt;
-  &lt;string&gt;0000358676;00;KUKA.NavSolution Lift 1.16 KMP1500-S.zip&lt;/string&gt;
   &lt;string&gt;0000356423;00;KUKA.NavSolution 1.16 KMP1500-S.zip&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>

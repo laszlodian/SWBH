@@ -720,7 +720,7 @@ namespace SWB_OptionPackageInstaller
         private void btCheckOPs_Click(object sender, EventArgs e)
         {
             CommandControler.Instance.CheckPackagesInFolder(PathOfOptionPackages);
-            dgvForPackagesInFolder.Visible = true;
+
             PrepareDataGridView(dgvForPackagesInFolder);
             ConfigureDgvForPackagesInFolder(dgvForPackagesInFolder, bindingSrcForRemotePackages);
         }

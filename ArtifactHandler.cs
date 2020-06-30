@@ -320,9 +320,10 @@ namespace SWB_OptionPackageInstaller
             //Read out the build number from the txt file on the server
             ReadOut();
 
-            Thread thread = new Thread(new ThreadStart(() => ReadOutSWBPathFromJSON(LastBuildPath)));
+            /*      Thread thread = new Thread(new ThreadStart(() =>*/
+            ReadOutSWBPathFromJSON(LastBuildPath);
             //thread.Start();
-            ThreadManager.Instance.StartTasks(thread);
+            //ThreadManager.Instance.StartTasks(thread);
             Thread.Sleep(30);
             //Copy the artifacts and products from the newest build
             CancellationToken cancellationToken = new CancellationToken(true);
